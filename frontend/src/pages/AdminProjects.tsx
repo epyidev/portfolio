@@ -57,11 +57,21 @@ const AdminProjects: React.FC = () => {
 
   const handleToggleVisibility = async (project: Project) => {
     try {
+      // Cycle entre les 3 états : public -> unlisted -> private -> public
+      let newVisibility: 'public' | 'unlisted' | 'private';
+      if (project.visibility === 'public') {
+        newVisibility = 'unlisted';
+      } else if (project.visibility === 'unlisted') {
+        newVisibility = 'private';
+      } else {
+        newVisibility = 'public';
+      }
+
       const formData = new FormData();
       formData.append('title', project.title);
       formData.append('shortDescription', project.shortDescription);
       formData.append('longDescription', project.longDescription);
-      formData.append('visibility', project.visibility === 'public' ? 'private' : 'public');
+      formData.append('visibility', newVisibility);
       formData.append('order', project.order?.toString() || '0');
       if (project.demoUrl) formData.append('demoUrl', project.demoUrl);
       if (project.githubUrl) formData.append('githubUrl', project.githubUrl);
@@ -197,11 +207,19 @@ const AdminProjects: React.FC = () => {
                             <span style={{ 
                               fontSize: '0.875rem',
                               padding: 'var(--spacing-xs) var(--spacing-sm)',
-                              backgroundColor: project.visibility === 'public' ? 'var(--green-100)' : 'var(--gray-100)',
-                              color: project.visibility === 'public' ? 'var(--green-700)' : 'var(--gray-700)',
+                              backgroundColor: 
+                                project.visibility === 'public' ? 'var(--green-100)' : 
+                                project.visibility === 'unlisted' ? 'var(--yellow-100)' : 
+                                'var(--gray-100)',
+                              color: 
+                                project.visibility === 'public' ? 'var(--green-700)' : 
+                                project.visibility === 'unlisted' ? 'var(--yellow-700)' : 
+                                'var(--gray-700)',
                               borderRadius: 'var(--border-radius)'
                             }}>
-                              {project.visibility === 'public' ? 'Public' : 'Privé'}
+                              {project.visibility === 'public' ? 'Public' : 
+                               project.visibility === 'unlisted' ? 'Non répertorié' : 
+                               'Privé'}
                             </span>
                             <span style={{ fontSize: '0.875rem', color: 'var(--gray-500)' }}>
                               Ordre: {project.order || index + 1}
@@ -211,12 +229,6 @@ const AdminProjects: React.FC = () => {
 
                         {/* Actions */}
                         <div style={{ display: 'flex', gap: 'var(--spacing-xs)' }}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            icon={project.visibility === 'public' ? Eye : EyeOff}
-                            onClick={() => handleToggleVisibility(project)}
-                          />
                           <Button
                             variant="ghost"
                             size="sm"
