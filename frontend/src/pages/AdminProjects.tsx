@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { Button, Card, LoadingSpinner } from '../components/UI';
+import { Button, Card, LoadingSpinner, Modal } from '../components/UI';
+import ProjectForm from '../components/ProjectForm';
 import projectService from '../services/projectService';
 import type { Project } from '../types';
 
@@ -10,6 +11,8 @@ const AdminProjects: React.FC = () => {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   if (authLoading) {
     return (
@@ -71,6 +74,24 @@ const AdminProjects: React.FC = () => {
     }
   };
 
+  const handleCreateProject = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+  };
+
+  const handleCloseModals = () => {
+    setIsCreateModalOpen(false);
+    setEditingProject(null);
+  };
+
+  const handleProjectSaved = async () => {
+    await fetchProjects();
+    handleCloseModals();
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -103,7 +124,7 @@ const AdminProjects: React.FC = () => {
             <Button 
               variant="secondary" 
               icon={Plus}
-              onClick={() => window.location.href = '/admin/projects/new'}
+              onClick={handleCreateProject}
             >
               Nouveau projet
             </Button>
@@ -124,7 +145,7 @@ const AdminProjects: React.FC = () => {
                 <Button 
                   variant="primary" 
                   icon={Plus}
-                  onClick={() => window.location.href = '/admin/projects/new'}
+                  onClick={handleCreateProject}
                 >
                   Créer mon premier projet
                 </Button>
@@ -200,7 +221,7 @@ const AdminProjects: React.FC = () => {
                             variant="ghost"
                             size="sm"
                             icon={Edit}
-                            onClick={() => window.location.href = `/admin/projects/${project.id}/edit`}
+                            onClick={() => handleEditProject(project)}
                           />
                           <Button
                             variant="ghost"
@@ -219,6 +240,35 @@ const AdminProjects: React.FC = () => {
           )}
         </div>
       </section>
+
+      {/* Modal de création */}
+      <Modal
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseModals}
+        title="Créer un nouveau projet"
+        size="lg"
+      >
+        <ProjectForm
+          onSave={handleProjectSaved}
+          onCancel={handleCloseModals}
+        />
+      </Modal>
+
+      {/* Modal d'édition */}
+      <Modal
+        isOpen={!!editingProject}
+        onClose={handleCloseModals}
+        title="Modifier le projet"
+        size="lg"
+      >
+        {editingProject && (
+          <ProjectForm
+            project={editingProject}
+            onSave={handleProjectSaved}
+            onCancel={handleCloseModals}
+          />
+        )}
+      </Modal>
     </div>
   );
 };
