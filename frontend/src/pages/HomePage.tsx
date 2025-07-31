@@ -86,64 +86,6 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Section Projets en vedette */}
-      <section className="section section-gray">
-        <div className="container">
-          <div className="section-title">
-            <h2>Projets en vedette</h2>
-            <p>
-              Découvrez quelques-uns de mes projets récents qui démontrent mes compétences 
-              et ma passion pour le développement web.
-            </p>
-          </div>
-          
-          <div className="grid grid-3 gap-lg">
-            {featuredProjects.map((project) => (
-              <Card key={project.id} hover>
-                <div style={{ 
-                  aspectRatio: '16/9', 
-                  backgroundColor: 'var(--gray-200)', 
-                  borderRadius: 'var(--border-radius)', 
-                  marginBottom: 'var(--spacing-md)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--gray-400)'
-                }}>
-                  {project.imageUrl || project.thumbnail ? (
-                    <img
-                      src={project.imageUrl || project.thumbnail}
-                      alt={project.title}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--border-radius)' }}
-                    />
-                  ) : (
-                    <span>Pas d'image</span>
-                  )}
-                </div>
-                <h3>{project.title}</h3>
-                <p>{project.description || project.shortDescription}</p>
-                <div style={{ display: 'flex', gap: 'var(--spacing-sm)', marginTop: 'var(--spacing-md)' }}>
-                  <Button variant="outline" size="sm" icon={ExternalLink}>
-                    Demo
-                  </Button>
-                  <Button variant="ghost" size="sm" icon={Github}>
-                    Code
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center" style={{ marginTop: 'var(--spacing-2xl)' }}>
-            <Link to="/portfolio">
-              <Button icon={ArrowRight} iconPosition="right">
-                Voir tous les projets
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 };
