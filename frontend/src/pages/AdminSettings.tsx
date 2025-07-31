@@ -12,6 +12,7 @@ const AdminSettings: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [homePageConfig, setHomePageConfig] = useState<HomePageConfig>({
     greeting: '',
+    shortDescription: '',
     contactEmail: '',
     contactPhone: '',
     markdownContent: '',
@@ -147,6 +148,14 @@ const AdminSettings: React.FC = () => {
                   value={homePageConfig.greeting}
                   onChange={(e) => setHomePageConfig((prev: HomePageConfig) => ({ ...prev, greeting: e.target.value }))}
                   placeholder="Bonjour, je suis Pierre Lihoreau..."
+                />
+
+                <Textarea
+                  label="Description courte"
+                  value={homePageConfig.shortDescription}
+                  onChange={(e) => setHomePageConfig((prev: HomePageConfig) => ({ ...prev, shortDescription: e.target.value }))}
+                  rows={3}
+                  placeholder="Développeur passionné spécialisé dans le développement web moderne..."
                 />
 
                 <div className="grid grid-2 gap-lg">

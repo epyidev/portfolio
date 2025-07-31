@@ -53,8 +53,7 @@ const HomePage: React.FC = () => {
         <div className="container">
           <h1>{config?.homePage?.greeting || 'Bonjour, je suis Pierre Lihoreau'}</h1>
           <p>
-            Développeur Full Stack passionné par la création d'applications web modernes et performantes. 
-            Je transforme vos idées en solutions digitales innovantes.
+            {config?.homePage?.shortDescription || 'Développeur Full Stack passionné par la création d\'applications web modernes et performantes. Je transforme vos idées en solutions digitales innovantes.'}
           </p>
           <div style={{ display: 'flex', gap: 'var(--spacing-md)', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Button 

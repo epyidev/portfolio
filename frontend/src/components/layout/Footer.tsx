@@ -60,8 +60,7 @@ const Footer: React.FC = () => {
           <div className="footer-section">
             <h3>Pierre Lihoreau</h3>
             <p>
-              Développeur passionné spécialisé dans le développement web moderne. 
-              Je crée des applications performantes et des expériences utilisateur exceptionnelles.
+              {config?.homePage?.shortDescription || 'Développeur passionné spécialisé dans le développement web moderne. Je crée des applications performantes et des expériences utilisateur exceptionnelles.'}
             </p>
             
             {/* Liens sociaux */}

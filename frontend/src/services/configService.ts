@@ -3,6 +3,7 @@ import type { Config, HomePageContent, SocialNetwork } from '../types';
 
 export interface HomePageConfig {
   greeting: string;
+  shortDescription: string;
   contactEmail: string;
   contactPhone: string;
   markdownContent: string;

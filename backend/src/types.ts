@@ -32,6 +32,7 @@ export interface BlogPost {
 
 export interface HomePageContent {
   greeting: string;
+  shortDescription: string;
   contactEmail: string;
   contactPhone: string;
   markdownContent: string;

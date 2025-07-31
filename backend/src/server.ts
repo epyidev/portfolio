@@ -329,10 +329,11 @@ app.delete('/api/admin/blog/:id', (req, res) => {
 // Gestion de la configuration
 app.put('/api/admin/config/homepage', (req, res) => {
   try {
-    const { greeting, contactEmail, contactPhone, markdownContent } = req.body;
+    const { greeting, shortDescription, contactEmail, contactPhone, markdownContent } = req.body;
     
     dataService.updateHomePage({
       greeting,
+      shortDescription,
       contactEmail,
       contactPhone,
       markdownContent
