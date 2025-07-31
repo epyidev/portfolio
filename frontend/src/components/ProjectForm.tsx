@@ -17,7 +17,6 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave, onCancel }) 
     title: project?.title || '',
     shortDescription: project?.shortDescription || '',
     longDescription: project?.longDescription || '',
-    category: project?.category || '',
     tags: project?.tags || [],
     visibility: project?.visibility || 'public',
     order: project?.order?.toString() || '0'
@@ -63,7 +62,6 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave, onCancel }) 
       formDataToSend.append('title', formData.title);
       formDataToSend.append('shortDescription', formData.shortDescription);
       formDataToSend.append('longDescription', formData.longDescription);
-      formDataToSend.append('category', formData.category);
       formDataToSend.append('visibility', formData.visibility);
       formDataToSend.append('order', formData.order);
       
@@ -121,16 +119,6 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave, onCancel }) 
         required
         rows={6}
         placeholder="Description complète du projet, technologies utilisées, fonctionnalités..."
-      />
-
-      {/* Catégorie */}
-      <Input
-        label="Catégorie"
-        name="category"
-        value={formData.category}
-        onChange={handleInputChange}
-        required
-        placeholder="Web Design, Développement, UI/UX, Branding..."
       />
 
       {/* Tags */}

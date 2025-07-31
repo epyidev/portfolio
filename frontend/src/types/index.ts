@@ -17,7 +17,6 @@ export interface Project {
   shortDescription: string;
   longDescription: string;
   content: string; // Alias pour longDescription
-  category: string; // Catégorie principale du projet
   tags: string[]; // Tags/mots-clés pour catégoriser
   technologies: string[]; // Nouveau champ
   imageUrl?: string; // Alias pour thumbnail

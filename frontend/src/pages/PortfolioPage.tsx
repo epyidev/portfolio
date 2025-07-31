@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Folder, Tag } from 'lucide-react';
+import { Search, Tag } from 'lucide-react';
 import { Button, Card, LoadingSpinner, Input } from '../components/UI';
 import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
@@ -35,7 +35,6 @@ const PortfolioPage: React.FC = () => {
       filtered = filtered.filter(project =>
         project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.shortDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
@@ -241,24 +240,6 @@ const PortfolioPage: React.FC = () => {
                       }}>
                         {project.shortDescription}
                       </p>
-                      
-                      {/* Catégorie */}
-                      {project.category && (
-                        <div style={{ 
-                          display: 'inline-flex', 
-                          alignItems: 'center', 
-                          gap: 'var(--spacing-xs)', 
-                          marginBottom: 'var(--spacing-sm)',
-                          padding: 'var(--spacing-xs) var(--spacing-sm)', 
-                          backgroundColor: 'var(--primary-100)', 
-                          color: 'var(--primary-800)', 
-                          fontSize: '0.875rem', 
-                          borderRadius: 'var(--border-radius)'
-                        }}>
-                          <Folder size={14} />
-                          {project.category}
-                        </div>
-                      )}
                       
                       {/* Tags */}
                       {project.tags && project.tags.length > 0 && (

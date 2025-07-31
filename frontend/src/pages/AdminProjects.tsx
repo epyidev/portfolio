@@ -72,7 +72,6 @@ const AdminProjects: React.FC = () => {
       formData.append('title', project.title);
       formData.append('shortDescription', project.shortDescription);
       formData.append('longDescription', project.longDescription);
-      formData.append('category', project.category || '');
       formData.append('tags', JSON.stringify(project.tags || []));
       formData.append('visibility', newVisibility);
       formData.append('order', project.order?.toString() || '0');
@@ -204,16 +203,6 @@ const AdminProjects: React.FC = () => {
                           <p className="text-gray" style={{ marginBottom: 'var(--spacing-sm)' }}>
                             {project.shortDescription}
                           </p>
-                          {project.category && (
-                            <p style={{ 
-                              fontSize: '0.875rem', 
-                              color: 'var(--primary-600)', 
-                              fontWeight: '500',
-                              marginBottom: 'var(--spacing-xs)' 
-                            }}>
-                              📂 {project.category}
-                            </p>
-                          )}
                           {project.tags && project.tags.length > 0 && (
                             <div style={{ 
                               display: 'flex', 

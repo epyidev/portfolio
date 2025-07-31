@@ -12,7 +12,6 @@ export interface Project {
   title: string;
   shortDescription: string;
   longDescription: string;
-  category: string;
   tags: string[];
   thumbnail: string;
   visibility: 'public' | 'unlisted' | 'private';

@@ -202,7 +202,7 @@ app.post('/api/admin/projects', (req, res) => {
     }
     
     try {
-      const { title, shortDescription, longDescription, category, tags, visibility, order } = req.body;
+      const { title, shortDescription, longDescription, tags, visibility, order } = req.body;
       
       // Validation des champs requis
       if (!title || !shortDescription || !longDescription) {
@@ -225,7 +225,6 @@ app.post('/api/admin/projects', (req, res) => {
         title,
         shortDescription,
         longDescription,
-        category: category || '',
         tags: parsedTags,
         thumbnail: req.file ? `/uploads/${req.file.filename}` : '',
         visibility: visibility || 'public',
@@ -252,7 +251,7 @@ app.put('/api/admin/projects/:id', (req, res) => {
     }
     
     try {
-      const { title, shortDescription, longDescription, category, tags, visibility, order } = req.body;
+      const { title, shortDescription, longDescription, tags, visibility, order } = req.body;
       
       // Parse tags si c'est une string JSON
       let parsedTags = [];
@@ -269,7 +268,6 @@ app.put('/api/admin/projects/:id', (req, res) => {
         title,
         shortDescription,
         longDescription,
-        category: category || '',
         tags: parsedTags,
         visibility,
         order: parseInt(order) || 0
