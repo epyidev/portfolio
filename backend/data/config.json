@@ -1,0 +1,25 @@
+{
+  "homePage": {
+    "greeting": "Bonjour, je suis Pierre Lihoreau...",
+    "contactEmail": "contact@example.com",
+    "contactPhone": "+33 1 23 45 67 89",
+    "markdownContent": "# À propos de moi\n\nContenu par défaut de la page d'accueil en markdown.",
+    "updatedAt": "2025-07-31T09:29:45.451Z"
+  },
+  "socialNetworks": [
+    {
+      "id": "1",
+      "name": "LinkedIn",
+      "url": "https://linkedin.com/in/pierre-lihoreau",
+      "icon": "linkedin",
+      "order": 1
+    },
+    {
+      "id": "1753967777772",
+      "name": "test",
+      "url": "test.com",
+      "icon": "youtube",
+      "order": 2
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import api from './api';
-import { Project } from '../types';
+import type { Project } from '../types';
 
-export const projectService = {
+const projectService = {
   // Public
   async getPublicProjects(): Promise<Project[]> {
     const response = await api.get('/projects');
@@ -40,4 +40,11 @@ export const projectService = {
   async deleteProject(id: string): Promise<void> {
     await api.delete(`/admin/projects/${id}`);
   },
+
+  // Alias pour la compatibilité avec l'interface
+  async getProjects(): Promise<Project[]> {
+    return this.getPublicProjects();
+  },
 };
+
+export default projectService;

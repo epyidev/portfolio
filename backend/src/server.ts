@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 import dataService from './dataService';
@@ -59,6 +60,32 @@ const upload = multer({
       return cb(null, true);
     } else {
       cb(new Error('Seules les images sont autorisées'));
+    }
+  }
+});
+
+// Configuration multer pour les CV (PDF uniquement)
+const cvStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, 'cv.pdf'); // Nom fixe pour le CV
+  }
+});
+
+const uploadCV = multer({ 
+  storage: cvStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /pdf/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = file.mimetype === 'application/pdf';
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Seul le format PDF est autorisé pour le CV'));
     }
   }
 });
@@ -331,6 +358,41 @@ app.put('/api/admin/config/social', (req, res) => {
   }
 });
 
+// Ajouter un réseau social
+app.post('/api/admin/config/social', (req, res) => {
+  try {
+    const socialNetwork = req.body;
+    
+    const config = dataService.getConfig();
+    const newSocialNetwork = {
+      id: Date.now().toString(),
+      ...socialNetwork,
+    };
+    
+    const updatedSocialNetworks = [...config.socialNetworks, newSocialNetwork];
+    dataService.updateSocialNetworks(updatedSocialNetworks);
+    
+    res.json(newSocialNetwork);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de l\'ajout du réseau social' });
+  }
+});
+
+// Supprimer un réseau social
+app.delete('/api/admin/config/social/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const config = dataService.getConfig();
+    const updatedSocialNetworks = config.socialNetworks.filter(social => social.id !== id);
+    dataService.updateSocialNetworks(updatedSocialNetworks);
+    
+    res.json({ message: 'Réseau social supprimé avec succès' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la suppression du réseau social' });
+  }
+});
+
 // Upload de fichiers
 app.post('/api/admin/upload', upload.single('file'), (req, res) => {
   try {
@@ -347,6 +409,23 @@ app.post('/api/admin/upload', upload.single('file'), (req, res) => {
   }
 });
 
+// Upload spécifique pour le CV
+app.post('/api/admin/cv/upload', authenticateToken, uploadCV.single('file'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Aucun fichier CV uploadé' });
+    }
+    
+    res.json({ 
+      filename: req.file.filename,
+      url: `/uploads/${req.file.filename}`,
+      message: 'CV uploadé avec succès'
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de l\'upload du CV' });
+  }
+});
+
 // Route de téléchargement du CV
 app.get('/api/cv/download', (req, res) => {
   const cvPath = path.join(__dirname, '../uploads/cv.pdf');
@@ -355,6 +434,21 @@ app.get('/api/cv/download', (req, res) => {
       res.status(404).json({ error: 'CV non trouvé' });
     }
   });
+});
+
+// Route de suppression du CV
+app.delete('/api/admin/cv', authenticateToken, (req, res) => {
+  try {
+    const cvPath = path.join(__dirname, '../uploads/cv.pdf');
+    if (fs.existsSync(cvPath)) {
+      fs.unlinkSync(cvPath);
+      res.json({ message: 'CV supprimé avec succès' });
+    } else {
+      res.status(404).json({ error: 'CV non trouvé' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la suppression du CV' });
+  }
 });
 
 // Initialisation d'un utilisateur admin par défaut

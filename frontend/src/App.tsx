@@ -1,32 +1,72 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/layout/Layout';
+import { Layout } from './components/Layout';
+import { HomePage, PortfolioPage, BlogPage, ContactPage, AdminLoginPage, AdminDashboard } from './pages';
+import AdminProjects from './pages/AdminProjects';
+import AdminSettings from './pages/AdminSettings';
+import AdminBlog from './pages/AdminBlog';
+import AdminCV from './pages/AdminCV';
 import { AuthProvider } from './contexts/AuthContext';
 
-// Pages publiques
-import HomePage from './pages/HomePage';
-import PortfolioPage from './pages/PortfolioPage';
-import BlogPage from './pages/BlogPage';
-
-// Pages admin
-import AdminLoginPage from './pages/admin/AdminLoginPage';
-
-const App: React.FC = () => {
+function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Routes avec layout principal */}
-          <Route path="/" element={<Layout><HomePage /></Layout>} />
-          <Route path="/portfolio" element={<Layout><PortfolioPage /></Layout>} />
-          <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+          {/* Pages publiques avec layout */}
+          <Route path="/" element={
+            <Layout>
+              <HomePage />
+            </Layout>
+          } />
+          <Route path="/portfolio" element={
+            <Layout>
+              <PortfolioPage />
+            </Layout>
+          } />
+          <Route path="/blog" element={
+            <Layout>
+              <BlogPage />
+            </Layout>
+          } />
+          <Route path="/contact" element={
+            <Layout>
+              <ContactPage />
+            </Layout>
+          } />
           
-          {/* Route admin sans layout principal */}
+          {/* Page de connexion admin sans layout */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
+          
+          {/* Routes admin avec layout */}
+          <Route path="/admin" element={
+            <Layout>
+              <AdminDashboard />
+            </Layout>
+          } />
+          <Route path="/admin/projects" element={
+            <Layout>
+              <AdminProjects />
+            </Layout>
+          } />
+          <Route path="/admin/blog" element={
+            <Layout>
+              <AdminBlog />
+            </Layout>
+          } />
+          <Route path="/admin/cv" element={
+            <Layout>
+              <AdminCV />
+            </Layout>
+          } />
+          <Route path="/admin/settings" element={
+            <Layout>
+              <AdminSettings />
+            </Layout>
+          } />
         </Routes>
       </Router>
     </AuthProvider>
   );
-};
+}
 
 export default App;

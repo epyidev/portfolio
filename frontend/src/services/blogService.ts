@@ -1,7 +1,7 @@
 import api from './api';
-import { BlogPost } from '../types';
+import type { BlogPost } from '../types';
 
-export const blogService = {
+const blogService = {
   // Public
   async getBlogPosts(): Promise<BlogPost[]> {
     const response = await api.get('/blog');
@@ -33,3 +33,5 @@ export const blogService = {
     await api.delete(`/admin/blog/${id}`);
   },
 };
+
+export default blogService;

@@ -1,7 +1,7 @@
 import api from './api';
-import { AuthResponse } from '../types';
+import type { AuthResponse } from '../types';
 
-export const authService = {
+const authService = {
   async login(username: string, password: string): Promise<AuthResponse> {
     const response = await api.post('/auth/login', { username, password });
     return response.data;
@@ -30,3 +30,5 @@ export const authService = {
     return !!this.getStoredToken();
   }
 };
+
+export default authService;
