@@ -52,7 +52,12 @@ const HomePage: React.FC = () => {
             Je transforme vos idées en solutions digitales innovantes.
           </p>
           <div style={{ display: 'flex', gap: 'var(--spacing-md)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Button variant="secondary" size="lg" icon={Download}>
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              icon={Download} 
+              onClick={() => window.open('/api/cv/download', '_blank')}
+            >
               Télécharger mon CV
             </Button>
             <Link to="/portfolio">
