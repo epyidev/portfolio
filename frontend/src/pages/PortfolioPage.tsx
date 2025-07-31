@@ -330,22 +330,6 @@ const PortfolioPage: React.FC = () => {
           )}
         </div>
       </section>
-
-      {/* Section CTA */}
-      <section className="hero">
-        <div className="container">
-          <h2>Un projet en tête ?</h2>
-          <p>
-            Je suis toujours intéressé par de nouveaux défis et de nouvelles collaborations. 
-            N'hésitez pas à me contacter pour discuter de votre projet.
-          </p>
-          <a href="mailto:contact@example.com">
-            <Button variant="secondary" size="lg">
-              Discutons de votre projet
-            </Button>
-          </a>
-        </div>
-      </section>
     </div>
   );
 };

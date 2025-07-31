@@ -215,21 +215,6 @@ const HomePage: React.FC = () => {
         </section>
       )}
 
-      {/* Section Contact CTA */}
-      <section className="hero">
-        <div className="container">
-          <h2>Prêt à collaborer ?</h2>
-          <p>
-            Je suis toujours à la recherche de nouveaux défis et de projets passionnants. 
-            N'hésitez pas à me contacter pour discuter de votre projet.
-          </p>
-          <a href={`mailto:${config?.homePage?.contactEmail || 'contact@example.com'}`}>
-            <Button variant="secondary" size="lg">
-              Me contacter
-            </Button>
-          </a>
-        </div>
-      </section>
     </div>
   );
 };

@@ -16,10 +16,10 @@
       "order": 1
     },
     {
-      "id": "1753967777772",
+      "id": "1753969976632",
       "name": "test",
-      "url": "test.com",
-      "icon": "youtube",
+      "url": "https://google.com/",
+      "icon": "discord",
       "order": 2
     }
   ]
