@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { User, Project, BlogPost, Config } from './types';
+import { User, Project, Config } from './types';
 
 class DataService {
   private dataDir = path.join(__dirname, '../data');
@@ -20,7 +20,6 @@ class DataService {
     const files = [
       { name: 'users.json', defaultData: [] },
       { name: 'projects.json', defaultData: [] },
-      { name: 'blog-posts.json', defaultData: [] },
       { 
         name: 'config.json', 
         defaultData: {
@@ -114,48 +113,6 @@ class DataService {
     if (index !== -1) {
       projects.splice(index, 1);
       this.saveProjects(projects);
-      return true;
-    }
-    return false;
-  }
-
-  // Blog Posts
-  getBlogPosts(): BlogPost[] {
-    return this.readJsonFile<BlogPost[]>('blog-posts.json');
-  }
-
-  saveBlogPosts(posts: BlogPost[]): void {
-    this.writeJsonFile('blog-posts.json', posts);
-  }
-
-  getBlogPostById(id: string): BlogPost | undefined {
-    const posts = this.getBlogPosts();
-    return posts.find(post => post.id === id);
-  }
-
-  addBlogPost(post: BlogPost): void {
-    const posts = this.getBlogPosts();
-    posts.push(post);
-    this.saveBlogPosts(posts);
-  }
-
-  updateBlogPost(id: string, updatedPost: Partial<BlogPost>): boolean {
-    const posts = this.getBlogPosts();
-    const index = posts.findIndex(post => post.id === id);
-    if (index !== -1) {
-      posts[index] = { ...posts[index], ...updatedPost, updatedAt: new Date().toISOString() };
-      this.saveBlogPosts(posts);
-      return true;
-    }
-    return false;
-  }
-
-  deleteBlogPost(id: string): boolean {
-    const posts = this.getBlogPosts();
-    const index = posts.findIndex(post => post.id === id);
-    if (index !== -1) {
-      posts.splice(index, 1);
-      this.saveBlogPosts(posts);
       return true;
     }
     return false;

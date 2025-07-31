@@ -29,24 +29,6 @@ export interface Project {
   updatedAt: string;
 }
 
-export interface BlogPost {
-  id: string;
-  title: string;
-  slug: string; // Nouveau champ généré à partir du titre
-  excerpt: string; // Alias pour shortDescription
-  shortDescription: string;
-  content: string;
-  imageUrl?: string; // Nouveau champ
-  category: string; // Nouveau champ
-  tags: string[]; // Nouveau champ
-  published: boolean; // Nouveau champ basé sur la date
-  publishedAt: string; // Alias pour publishDate
-  publishDate: string;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface HomePageContent {
   greeting: string;
   shortDescription: string;

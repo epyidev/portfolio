@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import dataService from './dataService';
 import { authenticateToken, requireAdmin, JWT_SECRET, AuthRequest } from './auth';
-import { User, Project, BlogPost } from './types';
+import { User, Project } from './types';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -147,30 +147,6 @@ app.get('/api/projects/:id', (req, res) => {
     res.json(project);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération du projet' });
-  }
-});
-
-// Articles de blog
-app.get('/api/blog', (req, res) => {
-  try {
-    const posts = dataService.getBlogPosts()
-      .sort((a, b) => a.order - b.order);
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des articles' });
-  }
-});
-
-// Article de blog individuel
-app.get('/api/blog/:id', (req, res) => {
-  try {
-    const post = dataService.getBlogPostById(req.params.id);
-    if (!post) {
-      return res.status(404).json({ error: 'Article non trouvé' });
-    }
-    res.json(post);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération de l\'article' });
   }
 });
 
@@ -330,74 +306,6 @@ app.delete('/api/admin/projects/:id', (req, res) => {
   }
 });
 
-// Gestion des articles de blog
-app.get('/api/admin/blog', (req, res) => {
-  try {
-    const posts = dataService.getBlogPosts().sort((a, b) => a.order - b.order);
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des articles' });
-  }
-});
-
-app.post('/api/admin/blog', (req, res) => {
-  try {
-    const { title, shortDescription, content, publishDate, order } = req.body;
-    
-    const post: BlogPost = {
-      id: uuidv4(),
-      title,
-      shortDescription,
-      content,
-      publishDate: publishDate || new Date().toISOString(),
-      order: parseInt(order) || 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    dataService.addBlogPost(post);
-    res.status(201).json(post);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la création de l\'article' });
-  }
-});
-
-app.put('/api/admin/blog/:id', (req, res) => {
-  try {
-    const { title, shortDescription, content, publishDate, order } = req.body;
-    
-    const updateData: Partial<BlogPost> = {
-      title,
-      shortDescription,
-      content,
-      publishDate,
-      order: parseInt(order) || 0
-    };
-
-    const success = dataService.updateBlogPost(req.params.id, updateData);
-    if (!success) {
-      return res.status(404).json({ error: 'Article non trouvé' });
-    }
-
-    const updatedPost = dataService.getBlogPostById(req.params.id);
-    res.json(updatedPost);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'article' });
-  }
-});
-
-app.delete('/api/admin/blog/:id', (req, res) => {
-  try {
-    const success = dataService.deleteBlogPost(req.params.id);
-    if (!success) {
-      return res.status(404).json({ error: 'Article non trouvé' });
-    }
-    res.json({ message: 'Article supprimé avec succès' });
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la suppression de l\'article' });
-  }
-});
-
 // Gestion de la configuration
 app.put('/api/admin/config/homepage', (req, res) => {
   try {
@@ -528,13 +436,11 @@ app.delete('/api/admin/cv', authenticateToken, (req, res) => {
 app.get('/api/admin/dashboard/stats', authenticateToken, (req, res) => {
   try {
     const projects = dataService.getProjects();
-    const blogPosts = dataService.getBlogPosts();
     const cvPath = path.join(__dirname, '../uploads/cv.pdf');
     const hasCVFile = fs.existsSync(cvPath);
 
     const stats = {
       projectsCount: projects.length,
-      blogPostsCount: blogPosts.length,
       hasCVFile,
       lastLoginDate: new Date().toISOString()
     };

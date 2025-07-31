@@ -2,7 +2,6 @@ import api from './api';
 
 export interface DashboardStats {
   projectsCount: number;
-  blogPostsCount: number;
   hasCVFile: boolean;
   lastLoginDate: string;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate, Link } from 'react-router-dom';
-import { LogOut, FileText, Briefcase, Settings, Download } from 'lucide-react';
+import { LogOut, Briefcase, Settings, Download } from 'lucide-react';
 import { Button, Card, LoadingSpinner } from '../components/UI';
 import dashboardService, { type DashboardStats } from '../services/dashboardService';
 
@@ -51,14 +51,6 @@ const AdminDashboard: React.FC = () => {
       count: `${stats?.projectsCount || 0} projet${(stats?.projectsCount || 0) > 1 ? 's' : ''}`,
       action: 'Gérer les projets',
       href: '/admin/projects'
-    },
-    {
-      title: 'Articles de blog',
-      description: 'Créer et modifier les articles',
-      icon: FileText,
-      count: `${stats?.blogPostsCount || 0} article${(stats?.blogPostsCount || 0) > 1 ? 's' : ''}`,
-      action: 'Gérer le blog',
-      href: '/admin/blog'
     },
     {
       title: 'CV',

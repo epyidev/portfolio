@@ -1,6 +1,18 @@
 # Portfolio Professionnel
 
-Site web portfolio développé selon le cahier des charges avec React/TypeScript en frontend et Express/Node.js en backend.
+Site web portfolio développé selon le cahi### Configuration
+
+### Variables d'environnement (backend)
+- `JWT_SECRET` : Clé secrète pour les tokens JWT
+- `PORT` : Port du serveur (défaut: 3001)
+- `FRONTEND_URL` : URL du frontend pour CORS
+
+### Structure des données JSON
+
+Les données sont stockées dans `backend/data/` :
+- `users.json` : Utilisateurs administrateurs
+- `projects.json` : Projets du portfolio
+- `config.json` : Configuration générale avec React/TypeScript en frontend et Express/Node.js en backend.
 
 ## Architecture
 
@@ -21,13 +33,11 @@ portfolio/
 ### Frontend Public
 - **Page d'accueil** : Présentation personnalisée avec contenu markdown éditable
 - **Portfolio** : Galerie de projets avec différents niveaux de visibilité
-- **Blog** : Articles avec contenu markdown et dates personnalisables
 - **Design** : Interface sobre, moderne et responsive avec Tailwind CSS
 
 ### Panel Administrateur
 - **Authentification** : Système de login sécurisé avec JWT
 - **Gestion des projets** : CRUD complet avec upload d'images
-- **Gestion du blog** : Création et édition d'articles avec markdown
 - **Configuration** : Édition de la page d'accueil et des réseaux sociaux
 - **Upload de fichiers** : Gestion des images et du CV
 
@@ -89,14 +99,12 @@ Les données sont stockées dans `backend/data/` :
 ### Publiques
 - `GET /api/config` : Configuration du site
 - `GET /api/projects` : Projets publics
-- `GET /api/blog` : Articles de blog
 - `POST /api/auth/login` : Connexion
 
 ### Administrateur (JWT requis)
 - `POST /api/admin/projects` : Créer un projet
 - `PUT /api/admin/projects/:id` : Modifier un projet
 - `DELETE /api/admin/projects/:id` : Supprimer un projet
-- `POST /api/admin/blog` : Créer un article
 - `PUT /api/admin/config/homepage` : Modifier la page d'accueil
 
 ## Technologies

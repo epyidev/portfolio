@@ -21,17 +21,6 @@ export interface Project {
   updatedAt: string;
 }
 
-export interface BlogPost {
-  id: string;
-  title: string;
-  shortDescription: string;
-  content: string;
-  publishDate: string;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface HomePageContent {
   greeting: string;
   shortDescription: string;

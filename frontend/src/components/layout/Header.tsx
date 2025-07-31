@@ -9,7 +9,6 @@ const Header: React.FC = () => {
   const navigationItems = [
     { name: 'Accueil', path: '/' },
     { name: 'Portfolio', path: '/portfolio' },
-    { name: 'Blog', path: '/blog' },
   ];
 
   const isActivePath = (path: string) => {

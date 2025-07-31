@@ -4,29 +4,24 @@ import { ArrowRight, Download, ExternalLink, Github } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Button, Card, LoadingSpinner } from '../components/UI';
 import projectService from '../services/projectService';
-import blogService from '../services/blogService';
 import configService from '../services/configService';
-import type { Project, BlogPost, Config } from '../types';
+import type { Project, Config } from '../types';
 
 const HomePage: React.FC = () => {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
-  const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
   const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [projects, posts, siteConfig] = await Promise.all([
+        const [projects, siteConfig] = await Promise.all([
           projectService.getProjects(),
-          blogService.getBlogPosts(),
           configService.getConfig(),
         ]);
-
+        
         // Prendre les 3 premiers projets
         setFeaturedProjects(projects.slice(0, 3));
-        // Prendre les 3 premiers articles de blog
-        setRecentPosts(posts.slice(0, 3));
         setConfig(siteConfig);
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
@@ -36,9 +31,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchData();
-  }, []);
-
-  if (loading) {
+  }, []);  if (loading) {
     return (
       <div style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <LoadingSpinner size="lg" />
@@ -150,70 +143,6 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Section Blog récent */}
-      {recentPosts.length > 0 && (
-        <section className="section">
-          <div className="container">
-            <div className="section-title">
-              <h2>Derniers articles</h2>
-              <p>
-                Découvrez mes réflexions et expériences sur le développement web, 
-                les technologies modernes et les meilleures pratiques.
-              </p>
-            </div>
-            
-            <div className="grid grid-3 gap-lg">
-              {recentPosts.map((post) => (
-                <Link key={post.id} to={`/blog/${post.slug || post.id}`} style={{ textDecoration: 'none' }}>
-                  <Card hover>
-                    <div style={{ 
-                      aspectRatio: '16/9', 
-                      backgroundColor: 'var(--gray-200)', 
-                      borderRadius: 'var(--border-radius)', 
-                      marginBottom: 'var(--spacing-md)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--gray-400)'
-                    }}>
-                      {post.imageUrl ? (
-                        <img
-                          src={post.imageUrl}
-                          alt={post.title}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--border-radius)' }}
-                        />
-                      ) : (
-                        <span>Pas d'image</span>
-                      )}
-                    </div>
-                    <h3>{post.title}</h3>
-                    <p>{post.excerpt || post.shortDescription}</p>
-                    <div className="flex-between text-gray-light" style={{ fontSize: '0.875rem', marginTop: 'var(--spacing-md)' }}>
-                      <span>{new Date(post.publishedAt || post.publishDate).toLocaleDateString('fr-FR')}</span>
-                      <span style={{ 
-                        padding: 'var(--spacing-xs) var(--spacing-sm)', 
-                        backgroundColor: 'var(--gray-100)', 
-                        borderRadius: 'var(--border-radius)' 
-                      }}>
-                        {post.category || 'Blog'}
-                      </span>
-                    </div>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-            
-            <div className="text-center" style={{ marginTop: 'var(--spacing-2xl)' }}>
-              <Link to="/blog">
-                <Button icon={ArrowRight} iconPosition="right">
-                  Voir tous les articles
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
 
     </div>
   );

@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { HomePage, PortfolioPage, BlogPage, AdminLoginPage, AdminDashboard } from './pages';
+import { HomePage, PortfolioPage, AdminLoginPage, AdminDashboard } from './pages';
 import AdminProjects from './pages/AdminProjects';
 import AdminSettings from './pages/AdminSettings';
-import AdminBlog from './pages/AdminBlog';
 import AdminCV from './pages/AdminCV';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -23,11 +22,6 @@ function App() {
               <PortfolioPage />
             </Layout>
           } />
-          <Route path="/blog" element={
-            <Layout>
-              <BlogPage />
-            </Layout>
-          } />
           
           {/* Page de connexion admin avec layout */}
           <Route path="/admin/login" element={
@@ -45,11 +39,6 @@ function App() {
           <Route path="/admin/projects" element={
             <Layout>
               <AdminProjects />
-            </Layout>
-          } />
-          <Route path="/admin/blog" element={
-            <Layout>
-              <AdminBlog />
             </Layout>
           } />
           <Route path="/admin/cv" element={

@@ -89,7 +89,6 @@ const Footer: React.FC = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
               <a href="/">Accueil</a>
               <a href="/portfolio">Portfolio</a>
-              <a href="/blog">Blog</a>
               <a 
                 href="/admin/login" 
                 style={{ 
