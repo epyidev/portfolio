@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Download, ExternalLink, Github } from 'lucide-react';
+import { ArrowRight, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { Button, Card, LoadingSpinner } from '../components/UI';
+import { Button, LoadingSpinner } from '../components/UI';
 import projectService from '../services/projectService';
 import configService from '../services/configService';
-import type { Project, Config } from '../types';
+import type { Config } from '../types';
 
 const HomePage: React.FC = () => {
-  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
   const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [projects, siteConfig] = await Promise.all([
+        const [, siteConfig] = await Promise.all([
           projectService.getProjects(),
           configService.getConfig(),
         ]);
         
-        // Prendre les 3 premiers projets
-        setFeaturedProjects(projects.slice(0, 3));
         setConfig(siteConfig);
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
