@@ -5,47 +5,24 @@
     "shortDescription": "Site web personnel avec React et TypeScript",
     "longDescription": "Portfolio Personnel - Ce projet est un site portfolio développé avec React, TypeScript et Express. Il comprend un système d'administration complet permettant de gérer les projets, articles de blog et paramètres du site.",
     "category": "Développement Web",
-    "tags": [
-      "Portfolio"
-    ],
-    "thumbnail": "/uploads/thumbnail-1753972524298-570252906.png",
+    "tags": ["React", "TypeScript", "Full Stack", "Portfolio"],
+    "thumbnail": "/uploads/portfolio-thumb.jpg",
     "visibility": "public",
     "order": 5,
     "createdAt": "2025-01-15T10:00:00.000Z",
-    "updatedAt": "2025-07-31T14:35:24.300Z"
+    "updatedAt": "2025-07-31T14:04:30.698Z"
   },
   {
     "id": "2",
     "title": "Application E-commerce",
     "shortDescription": "Plateforme de vente en ligne avec gestion des commandes",
     "longDescription": "Application E-commerce complète développée avec Next.js et MongoDB. Plateforme complète de vente en ligne avec catalogue de produits, panier d'achat, système de paiement Stripe et interface d'administration.",
-    "category": "E-commerce, coucou",
-    "tags": [
-      "Next.js",
-      "MongoDB",
-      "Stripe",
-      "E-commerce",
-      "Node.js"
-    ],
-    "thumbnail": "/uploads/thumbnail-1753972940702-469919055.png",
+    "category": "E-commerce",
+    "tags": ["Next.js", "MongoDB", "Stripe", "E-commerce"],
+    "thumbnail": "/uploads/ecommerce-thumb.jpg",
     "visibility": "public",
     "order": 2,
     "createdAt": "2025-01-10T14:30:00.000Z",
-    "updatedAt": "2025-07-31T14:42:20.704Z"
-  },
-  {
-    "id": "19ba40dc-af3d-40cc-820b-a3ec135c3312",
-    "title": "test",
-    "shortDescription": "test test",
-    "longDescription": "test test test",
-    "category": "Test",
-    "tags": [
-      "test"
-    ],
-    "thumbnail": "/uploads/thumbnail-1753972916410-570412268.png",
-    "visibility": "public",
-    "order": 0,
-    "createdAt": "2025-07-31T14:28:52.667Z",
-    "updatedAt": "2025-07-31T14:41:56.428Z"
+    "updatedAt": "2025-07-31T14:04:15.916Z"
   }
 ]

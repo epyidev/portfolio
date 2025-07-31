@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ExternalLink, Github, Search, Filter } from 'lucide-react';
+import { Search, Folder, Tag } from 'lucide-react';
 import { Button, Card, LoadingSpinner, Input } from '../components/UI';
 import projectService from '../services/projectService';
+import { getImageUrl } from '../services/api';
 import type { Project } from '../types';
 
 const PortfolioPage: React.FC = () => {
@@ -9,23 +10,13 @@ const PortfolioPage: React.FC = () => {
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTechnology, setSelectedTechnology] = useState('');
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const projectsData = await projectService.getProjects();
-        // Transformer les données pour correspondre à l'interface
-        const transformedProjects = projectsData.map(project => ({
-          ...project,
-          description: project.shortDescription,
-          content: project.longDescription,
-          technologies: [], // À remplir selon les données réelles
-          imageUrl: project.thumbnail,
-          featured: project.order <= 3, // Les 3 premiers sont en vedette
-        }));
-        setProjects(transformedProjects);
-        setFilteredProjects(transformedProjects);
+        setProjects(projectsData);
+        setFilteredProjects(projectsData);
       } catch (error) {
         console.error('Erreur lors du chargement des projets:', error);
       } finally {
@@ -36,15 +27,6 @@ const PortfolioPage: React.FC = () => {
     fetchProjects();
   }, []);
 
-  // Extraction des technologies uniques
-  const allTechnologies = React.useMemo(() => {
-    const techs = new Set<string>();
-    projects.forEach(project => {
-      project.technologies?.forEach(tech => techs.add(tech));
-    });
-    return Array.from(techs).sort();
-  }, [projects]);
-
   // Filtrage des projets
   useEffect(() => {
     let filtered = projects;
@@ -52,18 +34,14 @@ const PortfolioPage: React.FC = () => {
     if (searchTerm) {
       filtered = filtered.filter(project =>
         project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (selectedTechnology) {
-      filtered = filtered.filter(project =>
-        project.technologies?.includes(selectedTechnology)
+        project.shortDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
     setFilteredProjects(filtered);
-  }, [projects, searchTerm, selectedTechnology]);
+  }, [projects, searchTerm]);
 
   if (loading) {
     return (
@@ -99,60 +77,67 @@ const PortfolioPage: React.FC = () => {
             gap: 'var(--spacing-md)', 
             alignItems: 'center' 
           }}>
-            <div style={{ flex: 1, maxWidth: '400px', position: 'relative' }}>
-              <Input
-                type="text"
-                placeholder="Rechercher un projet..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Search 
-                style={{ 
-                  position: 'absolute', 
-                  left: '12px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  color: 'var(--gray-400)' 
-                }} 
-                size={20} 
-              />
+            <div style={{ 
+              flex: 1, 
+              maxWidth: '500px', 
+              position: 'relative',
+              width: '100%'
+            }}>
+              <div style={{ position: 'relative' }}>
+                <Search 
+                  style={{ 
+                    position: 'absolute', 
+                    left: '16px', 
+                    top: '50%', 
+                    transform: 'translateY(-50%)', 
+                    color: 'var(--gray-400)',
+                    zIndex: 1,
+                    pointerEvents: 'none'
+                  }} 
+                  size={20} 
+                />
+                <Input
+                  type="text"
+                  placeholder="Rechercher un projet..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    paddingLeft: '48px',
+                    fontSize: '1rem',
+                    height: '48px',
+                    borderRadius: '12px',
+                    border: '2px solid var(--gray-200)',
+                    transition: 'all 0.2s ease',
+                    outline: 'none',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--primary-500)';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'var(--gray-200)';
+                    e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.04)';
+                  }}
+                />
+              </div>
             </div>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-                <Filter size={20} style={{ color: 'var(--gray-400)' }} />
-                <select
-                  value={selectedTechnology}
-                  onChange={(e) => setSelectedTechnology(e.target.value)}
-                  style={{ 
-                    border: '1px solid var(--gray-300)', 
-                    borderRadius: 'var(--border-radius)', 
-                    padding: 'var(--spacing-sm) var(--spacing-md)', 
-                    outline: 'none' 
-                  }}
-                >
-                  <option value="">Toutes les technologies</option>
-                  {allTechnologies.map((tech) => (
-                    <option key={tech} value={tech}>
-                      {tech}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              {(searchTerm || selectedTechnology) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedTechnology('');
-                  }}
-                >
-                  Réinitialiser
-                </Button>
-              )}
-            </div>
+            {searchTerm && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSearchTerm('')}
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--gray-600)',
+                  padding: 'var(--spacing-sm) var(--spacing-md)',
+                  borderRadius: '8px'
+                }}
+              >
+                Effacer la recherche
+              </Button>
+            )}
           </div>
           
           <div style={{ 
@@ -185,21 +170,22 @@ const PortfolioPage: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-3 gap-2xl">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xl)' }}>
               {filteredProjects.map((project) => (
-                <div key={project.id} style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <Card hover>
+                <Card key={project.id} hover>
+                  <div style={{ display: 'flex', gap: 'var(--spacing-lg)', alignItems: 'flex-start' }}>
                     {/* Image du projet */}
                     <div style={{ 
-                      aspectRatio: '16/9', 
+                      width: '200px',
+                      height: '140px',
                       backgroundColor: 'var(--gray-200)', 
                       borderRadius: 'var(--border-radius)', 
-                      marginBottom: 'var(--spacing-md)', 
+                      flexShrink: 0,
                       overflow: 'hidden' 
                     }}>
-                    {project.imageUrl ? (
+                    {project.thumbnail ? (
                       <img
-                        src={project.imageUrl}
+                        src={getImageUrl(project.thumbnail)}
                         alt={project.title}
                         style={{ 
                           width: '100%', 
@@ -236,95 +222,74 @@ const PortfolioPage: React.FC = () => {
                         </svg>
                       </div>
                     )}
-                  </div>
+                    </div>
 
-                  {/* Contenu du projet */}
-                  <div style={{ flexGrow: 1 }}>
-                    <h3 style={{ 
-                      fontSize: '1.25rem', 
-                      fontWeight: '600', 
-                      marginBottom: 'var(--spacing-sm)' 
-                    }}>
-                      {project.title}
-                    </h3>
-                    <p style={{ 
-                      color: 'var(--gray-600)', 
-                      marginBottom: 'var(--spacing-md)',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}>
-                      {project.description}
-                    </p>
-                    
-                    {/* Technologies */}
-                    {project.technologies && project.technologies.length > 0 && (
-                      <div style={{ 
-                        display: 'flex', 
-                        flexWrap: 'wrap', 
-                        gap: 'var(--spacing-sm)', 
-                        marginBottom: 'var(--spacing-md)' 
+                    {/* Contenu du projet */}
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ 
+                        fontSize: '1.5rem', 
+                        fontWeight: '600', 
+                        marginBottom: 'var(--spacing-sm)' 
                       }}>
-                        {project.technologies.map((tech) => (
-                          <span
-                            key={tech}
-                            style={{ 
-                              padding: 'var(--spacing-xs) var(--spacing-sm)', 
-                              backgroundColor: 'var(--primary-100)', 
-                              color: 'var(--primary-800)', 
-                              fontSize: '0.875rem', 
-                              borderRadius: '9999px' 
-                            }}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                        {project.title}
+                      </h3>
+                      <p style={{ 
+                        color: 'var(--gray-600)', 
+                        marginBottom: 'var(--spacing-md)',
+                        fontSize: '1rem',
+                        lineHeight: '1.6'
+                      }}>
+                        {project.shortDescription}
+                      </p>
+                      
+                      {/* Catégorie */}
+                      {project.category && (
+                        <div style={{ 
+                          display: 'inline-flex', 
+                          alignItems: 'center', 
+                          gap: 'var(--spacing-xs)', 
+                          marginBottom: 'var(--spacing-sm)',
+                          padding: 'var(--spacing-xs) var(--spacing-sm)', 
+                          backgroundColor: 'var(--primary-100)', 
+                          color: 'var(--primary-800)', 
+                          fontSize: '0.875rem', 
+                          borderRadius: 'var(--border-radius)'
+                        }}>
+                          <Folder size={14} />
+                          {project.category}
+                        </div>
+                      )}
+                      
+                      {/* Tags */}
+                      {project.tags && project.tags.length > 0 && (
+                        <div style={{ 
+                          display: 'flex', 
+                          flexWrap: 'wrap', 
+                          gap: 'var(--spacing-sm)' 
+                        }}>
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              style={{ 
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 'var(--spacing-xs)',
+                                padding: 'var(--spacing-xs) var(--spacing-sm)', 
+                                backgroundColor: 'var(--gray-100)', 
+                                color: 'var(--gray-700)', 
+                                fontSize: '0.75rem', 
+                                borderRadius: '9999px' 
+                              }}
+                            >
+                              <Tag size={10} />
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-
-                  {/* Actions */}
-                  <div style={{ 
-                    display: 'flex', 
-                    gap: 'var(--spacing-sm)', 
-                    paddingTop: 'var(--spacing-md)' 
-                  }}>
-                    {project.demoUrl && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        icon={ExternalLink}
-                        style={{ flex: 1 }}
-                        onClick={() => window.open(project.demoUrl, '_blank')}
-                      >
-                        Démo
-                      </Button>
-                    )}
-                    {project.githubUrl && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        icon={Github}
-                        style={{ flex: 1 }}
-                        onClick={() => window.open(project.githubUrl, '_blank')}
-                      >
-                        Code
-                      </Button>
-                    )}
-                    {!project.demoUrl && !project.githubUrl && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        style={{ flex: 1 }}
-                        disabled
-                      >
-                        Bientôt disponible
-                      </Button>
-                    )}
-                  </div>
-                  </Card>
-                </div>
+                </Card>
               ))}
             </div>
           )}

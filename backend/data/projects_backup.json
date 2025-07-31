@@ -1,0 +1,54 @@
+[
+  {
+    "id": "1",
+    "title": "Site Portfolio",
+    "shortDescription": "Site web personnel avec React et TypeScript",
+    "longDescription": "# Portfolio Personnel\r\n\r\nCe projet est un site portfolio développé avec React, TypeScript et Express. Il comprend un système d'administration complet permettant de gérer les projets, articles de blog et paramètres du site.",
+    "category": "Développement Web",
+    "tags": ["React", "TypeScript", "Full Stack", "Portfolio"],
+    "thumbnail": "/uploads/portfolio-thumb.jpg",
+    "visibility": "public",
+    "order": 5,
+    "createdAt": "2025-01-15T10:00:00.000Z",
+    "updatedAt": "2025-07-31T14:04:30.698Z"
+  },
+  {
+    "id": "2",
+    "title": "Application E-commerce",
+    "shortDescription": "Plateforme de vente en ligne avec gestion des commandes",
+    "longDescription": "# Application E-commerce
+
+Plateforme complète de vente en ligne développée avec Next.js et MongoDB.",
+    "category": "E-commerce",
+    "tags": ["Next.js", "MongoDB", "Stripe", "E-commerce"],
+    "thumbnail": "/uploads/ecommerce-thumb.jpg",
+    "visibility": "public",
+    "order": 2,
+    "createdAt": "2025-01-10T14:30:00.000Z",
+    "updatedAt": "2025-07-31T14:04:15.916Z"
+  },
+  {
+    "id": "035fd424-aa0d-4c11-8c43-c2768dab4f20",
+    "title": "test projet",
+    "shortDescription": "desc courte",
+    "longDescription": "desc longue",
+    "category": "Test",
+    "tags": ["Test", "Demo"],
+    "thumbnail": "/uploads/thumbnail-1753970686764-152417002.jpg",
+    "visibility": "public",
+    "order": 0,
+    "createdAt": "2025-07-31T14:03:28.821Z",
+    "updatedAt": "2025-07-31T14:11:46.663Z"
+  },
+  {
+    "id": "035fd424-aa0d-4c11-8c43-c2768dab4f20",
+    "title": "test projet",
+    "shortDescription": "desc courte",
+    "longDescription": "desc longue",
+    "thumbnail": "/uploads/thumbnail-1753970686764-152417002.jpg",
+    "visibility": "public",
+    "order": 0,
+    "createdAt": "2025-07-31T14:03:28.821Z",
+    "updatedAt": "2025-07-31T14:11:46.663Z"
+  }
+]

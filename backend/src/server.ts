@@ -17,9 +17,24 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware de sécurité
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "http://localhost:5173", "http://localhost:3000"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", "https:", "data:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'self'"],
+    }
+  },
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || ['http://localhost:3000', 'http://localhost:5173'],
   credentials: true
 }));
 
@@ -34,8 +49,16 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Servir les fichiers statiques (images)
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Servir les fichiers statiques (images) avec CORS
+app.use('/uploads', (req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin === 'http://localhost:5173' || origin === 'http://localhost:3000') {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+}, express.static(path.join(__dirname, '../uploads')));
 
 // Configuration multer pour l'upload de fichiers
 const storage = multer.diskStorage({
@@ -195,55 +218,104 @@ app.get('/api/admin/projects', (req, res) => {
   }
 });
 
-app.post('/api/admin/projects', upload.single('thumbnail'), (req, res) => {
-  try {
-    const { title, shortDescription, longDescription, visibility, order } = req.body;
+app.post('/api/admin/projects', (req, res) => {
+  upload.single('thumbnail')(req, res, (err) => {
+    if (err) {
+      console.error('Erreur upload:', err);
+      return res.status(400).json({ error: err.message || 'Erreur lors de l\'upload du fichier' });
+    }
     
-    const project: Project = {
-      id: uuidv4(),
-      title,
-      shortDescription,
-      longDescription,
-      thumbnail: req.file ? `/uploads/${req.file.filename}` : '',
-      visibility: visibility || 'public',
-      order: parseInt(order) || 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    try {
+      const { title, shortDescription, longDescription, category, tags, visibility, order } = req.body;
+      
+      // Validation des champs requis
+      if (!title || !shortDescription || !longDescription) {
+        return res.status(400).json({ error: 'Titre, description courte et description longue sont requis' });
+      }
+      
+      // Parse tags si c'est une string JSON
+      let parsedTags = [];
+      if (tags) {
+        try {
+          parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+        } catch (e) {
+          console.error('Erreur parsing tags:', e);
+          parsedTags = [];
+        }
+      }
+      
+      const project: Project = {
+        id: uuidv4(),
+        title,
+        shortDescription,
+        longDescription,
+        category: category || '',
+        tags: parsedTags,
+        thumbnail: req.file ? `/uploads/${req.file.filename}` : '',
+        visibility: visibility || 'public',
+        order: parseInt(order) || 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
 
-    dataService.addProject(project);
-    res.status(201).json(project);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la création du projet' });
-  }
+      console.log('Création projet:', project.title, 'avec thumbnail:', project.thumbnail);
+      dataService.addProject(project);
+      res.status(201).json(project);
+    } catch (error) {
+      console.error('Erreur création projet:', error);
+      res.status(500).json({ error: 'Erreur lors de la création du projet' });
+    }
+  });
 });
 
-app.put('/api/admin/projects/:id', upload.single('thumbnail'), (req, res) => {
-  try {
-    const { title, shortDescription, longDescription, visibility, order } = req.body;
+app.put('/api/admin/projects/:id', (req, res) => {
+  upload.single('thumbnail')(req, res, (err) => {
+    if (err) {
+      console.error('Erreur upload mise à jour:', err);
+      return res.status(400).json({ error: err.message || 'Erreur lors de l\'upload du fichier' });
+    }
     
-    const updateData: Partial<Project> = {
-      title,
-      shortDescription,
-      longDescription,
-      visibility,
-      order: parseInt(order) || 0
-    };
+    try {
+      const { title, shortDescription, longDescription, category, tags, visibility, order } = req.body;
+      
+      // Parse tags si c'est une string JSON
+      let parsedTags = [];
+      if (tags) {
+        try {
+          parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+        } catch (e) {
+          console.error('Erreur parsing tags mise à jour:', e);
+          parsedTags = [];
+        }
+      }
+      
+      const updateData: Partial<Project> = {
+        title,
+        shortDescription,
+        longDescription,
+        category: category || '',
+        tags: parsedTags,
+        visibility,
+        order: parseInt(order) || 0
+      };
 
-    if (req.file) {
-      updateData.thumbnail = `/uploads/${req.file.filename}`;
+      if (req.file) {
+        updateData.thumbnail = `/uploads/${req.file.filename}`;
+        console.log('Mise à jour projet avec nouvelle thumbnail:', updateData.thumbnail);
+      }
+
+      const success = dataService.updateProject(req.params.id, updateData);
+      if (!success) {
+        return res.status(404).json({ error: 'Projet non trouvé' });
+      }
+
+      const updatedProject = dataService.getProjectById(req.params.id);
+      res.json(updatedProject);
+    } catch (error) {
+      console.error('Erreur mise à jour projet:', error);
+      res.status(500).json({ error: 'Erreur lors de la mise à jour du projet' });
     }
-
-    const success = dataService.updateProject(req.params.id, updateData);
-    if (!success) {
-      return res.status(404).json({ error: 'Projet non trouvé' });
-    }
-
-    const updatedProject = dataService.getProjectById(req.params.id);
-    res.json(updatedProject);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la mise à jour du projet' });
-  }
+  });
 });
 
 app.delete('/api/admin/projects/:id', (req, res) => {

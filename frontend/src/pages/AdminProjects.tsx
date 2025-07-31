@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button, Card, LoadingSpinner, Modal } from '../components/UI';
 import ProjectForm from '../components/ProjectForm';
 import projectService from '../services/projectService';
+import { getImageUrl } from '../services/api';
 import type { Project } from '../types';
 
 const AdminProjects: React.FC = () => {
@@ -71,10 +72,10 @@ const AdminProjects: React.FC = () => {
       formData.append('title', project.title);
       formData.append('shortDescription', project.shortDescription);
       formData.append('longDescription', project.longDescription);
+      formData.append('category', project.category || '');
+      formData.append('tags', JSON.stringify(project.tags || []));
       formData.append('visibility', newVisibility);
       formData.append('order', project.order?.toString() || '0');
-      if (project.demoUrl) formData.append('demoUrl', project.demoUrl);
-      if (project.githubUrl) formData.append('githubUrl', project.githubUrl);
       
       await projectService.updateProject(project.id, formData);
       await fetchProjects();
@@ -177,7 +178,7 @@ const AdminProjects: React.FC = () => {
                     }}>
                       {project.thumbnail ? (
                         <img
-                          src={`http://localhost:3001${project.thumbnail}`}
+                          src={getImageUrl(project.thumbnail)}
                           alt={project.title}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
@@ -203,6 +204,48 @@ const AdminProjects: React.FC = () => {
                           <p className="text-gray" style={{ marginBottom: 'var(--spacing-sm)' }}>
                             {project.shortDescription}
                           </p>
+                          {project.category && (
+                            <p style={{ 
+                              fontSize: '0.875rem', 
+                              color: 'var(--primary-600)', 
+                              fontWeight: '500',
+                              marginBottom: 'var(--spacing-xs)' 
+                            }}>
+                              📂 {project.category}
+                            </p>
+                          )}
+                          {project.tags && project.tags.length > 0 && (
+                            <div style={{ 
+                              display: 'flex', 
+                              flexWrap: 'wrap', 
+                              gap: 'var(--spacing-xs)', 
+                              marginBottom: 'var(--spacing-sm)' 
+                            }}>
+                              {project.tags.slice(0, 3).map((tag) => (
+                                <span
+                                  key={tag}
+                                  style={{
+                                    fontSize: '0.75rem',
+                                    padding: '2px var(--spacing-xs)',
+                                    backgroundColor: 'var(--gray-100)',
+                                    color: 'var(--gray-600)',
+                                    borderRadius: 'var(--border-radius)',
+                                    border: '1px solid var(--gray-200)'
+                                  }}
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                              {project.tags.length > 3 && (
+                                <span style={{ 
+                                  fontSize: '0.75rem', 
+                                  color: 'var(--gray-500)' 
+                                }}>
+                                  +{project.tags.length - 3} autres
+                                </span>
+                              )}
+                            </div>
+                          )}
                           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
                             <span style={{ 
                               fontSize: '0.875rem',
@@ -229,6 +272,13 @@ const AdminProjects: React.FC = () => {
 
                         {/* Actions */}
                         <div style={{ display: 'flex', gap: 'var(--spacing-xs)' }}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={project.visibility === 'public' ? Eye : EyeOff}
+                            onClick={() => handleToggleVisibility(project)}
+                            title={`Visibilité: ${project.visibility}`}
+                          />
                           <Button
                             variant="ghost"
                             size="sm"

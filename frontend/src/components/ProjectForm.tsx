@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Upload, X } from 'lucide-react';
 import { Button, Input, Textarea } from './UI';
+import TagSelector from './TagSelector';
 import projectService from '../services/projectService';
+import { getImageUrl } from '../services/api';
 import type { Project } from '../types';
 
 interface ProjectFormProps {
@@ -15,8 +17,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave, onCancel }) 
     title: project?.title || '',
     shortDescription: project?.shortDescription || '',
     longDescription: project?.longDescription || '',
-    demoUrl: project?.demoUrl || '',
-    githubUrl: project?.githubUrl || '',
+    category: project?.category || '',
+    tags: project?.tags || [],
     visibility: project?.visibility || 'public',
     order: project?.order?.toString() || '0'
   });
@@ -26,7 +28,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave, onCancel }) 
 
   useEffect(() => {
     if (project?.thumbnail) {
-      setThumbnailPreview(`http://localhost:3001${project.thumbnail}`);
+      setThumbnailPreview(getImageUrl(project.thumbnail));
     }
   }, [project]);
 
@@ -56,9 +58,17 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave, onCancel }) 
 
     try {
       const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
-      });
+      
+      // Ajouter les champs simples
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('shortDescription', formData.shortDescription);
+      formDataToSend.append('longDescription', formData.longDescription);
+      formDataToSend.append('category', formData.category);
+      formDataToSend.append('visibility', formData.visibility);
+      formDataToSend.append('order', formData.order);
+      
+      // Convertir les tags en JSON string
+      formDataToSend.append('tags', JSON.stringify(formData.tags));
 
       if (thumbnail) {
         formDataToSend.append('thumbnail', thumbnail);
@@ -113,25 +123,23 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave, onCancel }) 
         placeholder="Description complète du projet, technologies utilisées, fonctionnalités..."
       />
 
-      {/* URLs */}
-      <div className="grid grid-2 gap-lg">
-        <Input
-          label="URL de démonstration"
-          name="demoUrl"
-          type="url"
-          value={formData.demoUrl}
-          onChange={handleInputChange}
-          placeholder="https://mon-projet.com"
-        />
-        <Input
-          label="URL GitHub"
-          name="githubUrl"
-          type="url"
-          value={formData.githubUrl}
-          onChange={handleInputChange}
-          placeholder="https://github.com/user/repo"
-        />
-      </div>
+      {/* Catégorie */}
+      <Input
+        label="Catégorie"
+        name="category"
+        value={formData.category}
+        onChange={handleInputChange}
+        required
+        placeholder="Web Design, Développement, UI/UX, Branding..."
+      />
+
+      {/* Tags */}
+      <TagSelector
+        selectedTags={formData.tags}
+        onTagsChange={(tags) => setFormData(prev => ({ ...prev, tags }))}
+        label="Tags"
+        placeholder="Ajouter un tag pour catégoriser le projet..."
+      />
 
       {/* Visibilité et ordre */}
       <div className="grid grid-2 gap-lg">
