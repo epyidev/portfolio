@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { HomePage, PortfolioPage, BlogPage, ContactPage, AdminLoginPage, AdminDashboard } from './pages';
+import { HomePage, PortfolioPage, BlogPage, AdminLoginPage, AdminDashboard } from './pages';
 import AdminProjects from './pages/AdminProjects';
 import AdminSettings from './pages/AdminSettings';
 import AdminBlog from './pages/AdminBlog';
@@ -26,11 +26,6 @@ function App() {
           <Route path="/blog" element={
             <Layout>
               <BlogPage />
-            </Layout>
-          } />
-          <Route path="/contact" element={
-            <Layout>
-              <ContactPage />
             </Layout>
           } />
           

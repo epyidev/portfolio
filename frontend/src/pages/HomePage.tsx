@@ -224,11 +224,11 @@ const HomePage: React.FC = () => {
             Je suis toujours à la recherche de nouveaux défis et de projets passionnants. 
             N'hésitez pas à me contacter pour discuter de votre projet.
           </p>
-          <Link to="/contact">
+          <a href={`mailto:${config?.homePage?.contactEmail || 'contact@example.com'}`}>
             <Button variant="secondary" size="lg">
               Me contacter
             </Button>
-          </Link>
+          </a>
         </div>
       </section>
     </div>

@@ -339,13 +339,11 @@ const PortfolioPage: React.FC = () => {
             Je suis toujours intéressé par de nouveaux défis et de nouvelles collaborations. 
             N'hésitez pas à me contacter pour discuter de votre projet.
           </p>
-          <Button
-            variant="secondary"
-            size="lg"
-            onClick={() => window.location.href = '/contact'}
-          >
-            Discutons de votre projet
-          </Button>
+          <a href="mailto:contact@example.com">
+            <Button variant="secondary" size="lg">
+              Discutons de votre projet
+            </Button>
+          </a>
         </div>
       </section>
     </div>

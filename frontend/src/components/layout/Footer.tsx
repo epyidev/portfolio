@@ -91,7 +91,6 @@ const Footer: React.FC = () => {
               <a href="/">Accueil</a>
               <a href="/portfolio">Portfolio</a>
               <a href="/blog">Blog</a>
-              <a href="/contact">Contact</a>
               <a 
                 href="/admin/login" 
                 style={{ 

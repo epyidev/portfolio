@@ -56,12 +56,11 @@ const AdminSettings: React.FC = () => {
     setSaving(true);
     try {
       await configService.updateHomePage(homePageConfig);
-      alert('Configuration sauvegardée avec succès !');
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
-      alert('Erreur lors de la sauvegarde');
     } finally {
-      setSaving(false);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setSaving(false);
     }
   };
 
