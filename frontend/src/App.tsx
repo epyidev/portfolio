@@ -29,8 +29,12 @@ function App() {
             </Layout>
           } />
           
-          {/* Page de connexion admin sans layout */}
-          <Route path="/admin/login" element={<AdminLoginPage />} />
+          {/* Page de connexion admin avec layout */}
+          <Route path="/admin/login" element={
+            <Layout>
+              <AdminLoginPage />
+            </Layout>
+          } />
           
           {/* Routes admin avec layout */}
           <Route path="/admin" element={
