@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
 import { Button, Card, Input, Textarea } from '../components/UI';
+import { configService } from '../services';
 
 interface ContactForm {
   name: string;
@@ -10,6 +11,7 @@ interface ContactForm {
 }
 
 const ContactPage: React.FC = () => {
+  const [config, setConfig] = useState<any>(null);
   const [formData, setFormData] = useState<ContactForm>({
     name: '',
     email: '',
@@ -18,6 +20,19 @@ const ContactPage: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const configData = await configService.getConfig();
+        setConfig(configData);
+      } catch (error) {
+        console.error('Erreur lors du chargement de la configuration:', error);
+      }
+    };
+
+    loadConfig();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -58,15 +73,15 @@ const ContactPage: React.FC = () => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'contact@monportfolio.com',
-      link: 'mailto:contact@monportfolio.com',
+      value: config?.homePage?.contactEmail || 'contact@monportfolio.com',
+      link: `mailto:${config?.homePage?.contactEmail || 'contact@monportfolio.com'}`,
       description: 'Réponse sous 24h',
     },
     {
       icon: Phone,
       title: 'Téléphone',
-      value: '+33 1 23 45 67 89',
-      link: 'tel:+33123456789',
+      value: config?.homePage?.contactPhone || '+33 1 23 45 67 89',
+      link: `tel:${config?.homePage?.contactPhone?.replace(/\s/g, '') || '+33123456789'}`,
       description: 'Lun-Ven 9h-18h',
     },
     {

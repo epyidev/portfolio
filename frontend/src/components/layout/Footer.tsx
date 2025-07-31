@@ -1,10 +1,40 @@
-import React from 'react';
-import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Github, Linkedin, Mail, ExternalLink, Youtube, Twitter, Instagram, Facebook } from 'lucide-react';
+import { configService } from '../../services';
 
 const Footer: React.FC = () => {
+  const [config, setConfig] = useState<any>(null);
   const currentYear = new Date().getFullYear();
 
-  const socialLinks = [
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const configData = await configService.getConfig();
+        setConfig(configData);
+      } catch (error) {
+        console.error('Erreur lors du chargement de la configuration:', error);
+      }
+    };
+
+    loadConfig();
+  }, []);
+
+  // Mapping des icônes par nom
+  const iconMap: { [key: string]: React.ComponentType<any> } = {
+    github: Github,
+    linkedin: Linkedin,
+    mail: Mail,
+    youtube: Youtube,
+    twitter: Twitter,
+    instagram: Instagram,
+    facebook: Facebook,
+  };
+
+  const socialLinks = config?.socialNetworks?.map((network: any) => ({
+    name: network.name,
+    url: network.url,
+    icon: iconMap[network.icon.toLowerCase()] || ExternalLink,
+  })) || [
     {
       name: 'GitHub',
       url: 'https://github.com',
@@ -17,7 +47,7 @@ const Footer: React.FC = () => {
     },
     {
       name: 'Email',
-      url: 'mailto:contact@example.com',
+      url: `mailto:${config?.homePage?.contactEmail || 'contact@example.com'}`,
       icon: Mail,
     },
   ];
@@ -36,7 +66,7 @@ const Footer: React.FC = () => {
             
             {/* Liens sociaux */}
             <div className="social-links">
-              {socialLinks.map((link) => {
+              {socialLinks.map((link: { name: string; url: string; icon: React.ComponentType<any> }) => {
                 const IconComponent = link.icon;
                 return (
                   <a
@@ -88,7 +118,7 @@ const Footer: React.FC = () => {
                 rel="noopener noreferrer"
                 style={{ color: 'var(--primary-500)' }}
               >
-                Let's PopP ! <ExternalLink size={14} style={{ display: 'inline', marginLeft: '4px' }} />
+                Let's PoP !
               </a>
             </p>
           </div>

@@ -3,8 +3,8 @@
     "greeting": "Bonjour, je suis Pierre Lihoreau...",
     "contactEmail": "contact@example.com",
     "contactPhone": "+33 1 23 45 67 89",
-    "markdownContent": "# À propos de moi\n\nContenu par défaut de la page d'accueil en markdown.",
-    "updatedAt": "2025-07-31T13:30:50.847Z"
+    "markdownContent": "# À propos de moi\n\nContenu par défaut de la page d'accueil en markdown.\n\n__Salut les petits potes__\n\n**mdr en gras**",
+    "updatedAt": "2025-07-31T13:38:50.808Z"
   },
   "socialNetworks": [
     {

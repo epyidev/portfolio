@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Download, ExternalLink, Github } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { Button, Card, LoadingSpinner } from '../components/UI';
 import projectService from '../services/projectService';
 import blogService from '../services/blogService';
-import type { Project, BlogPost } from '../types';
+import configService from '../services/configService';
+import type { Project, BlogPost, Config } from '../types';
 
 const HomePage: React.FC = () => {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
   const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
+  const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [projects, posts] = await Promise.all([
+        const [projects, posts, siteConfig] = await Promise.all([
           projectService.getProjects(),
           blogService.getBlogPosts(),
+          configService.getConfig(),
         ]);
 
         // Prendre les 3 premiers projets
         setFeaturedProjects(projects.slice(0, 3));
         // Prendre les 3 premiers articles de blog
         setRecentPosts(posts.slice(0, 3));
+        setConfig(siteConfig);
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
       } finally {
@@ -46,7 +51,7 @@ const HomePage: React.FC = () => {
       {/* Section Hero */}
       <section className="hero">
         <div className="container">
-          <h1>Bonjour, je suis Pierre Lihoreau</h1>
+          <h1>{config?.homePage?.greeting || 'Bonjour, je suis Pierre Lihoreau'}</h1>
           <p>
             Développeur Full Stack passionné par la création d'applications web modernes et performantes. 
             Je transforme vos idées en solutions digitales innovantes.
@@ -72,82 +77,19 @@ const HomePage: React.FC = () => {
       {/* Section À propos */}
       <section className="section">
         <div className="container">
-          <div className="grid grid-2 gap-xl" style={{ alignItems: 'center' }}>
-            <div>
-              <h2>À propos de moi</h2>
-              <p>
-                Développeur Full Stack passionné avec plus de 3 ans d'expérience dans la création 
-                d'applications web modernes. Je me spécialise dans l'écosystème JavaScript/TypeScript, 
-                avec une expertise particulière en React, Node.js et les architectures cloud.
-              </p>
-              <p>
-                Mon approche combine créativité et rigueur technique pour livrer des solutions 
-                performantes qui répondent aux besoins métier tout en offrant une expérience 
-                utilisateur exceptionnelle.
-              </p>
-              
-              <div className="grid grid-2 gap-md" style={{ marginTop: 'var(--spacing-xl)' }}>
-                <div>
-                  <h3>Frontend</h3>
-                  <ul style={{ listStyle: 'none', padding: 0 }}>
-                    <li>• React / Next.js</li>
-                    <li>• TypeScript</li>
-                    <li>• CSS moderne</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3>Backend</h3>
-                  <ul style={{ listStyle: 'none', padding: 0 }}>
-                    <li>• Node.js / Express</li>
-                    <li>• PostgreSQL</li>
-                    <li>• API REST</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            
-            <Card>
-              <h3>Compétences</h3>
-              <div style={{ marginBottom: 'var(--spacing-md)' }}>
-                <div className="flex-between" style={{ marginBottom: 'var(--spacing-xs)' }}>
-                  <span>JavaScript/TypeScript</span>
-                  <span className="text-primary font-semibold">95%</span>
-                </div>
-                <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--gray-200)', borderRadius: '4px' }}>
-                  <div style={{ width: '95%', height: '100%', backgroundColor: 'var(--primary-600)', borderRadius: '4px' }}></div>
-                </div>
-              </div>
-              
-              <div style={{ marginBottom: 'var(--spacing-md)' }}>
-                <div className="flex-between" style={{ marginBottom: 'var(--spacing-xs)' }}>
-                  <span>React / Next.js</span>
-                  <span className="text-primary font-semibold">90%</span>
-                </div>
-                <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--gray-200)', borderRadius: '4px' }}>
-                  <div style={{ width: '90%', height: '100%', backgroundColor: 'var(--primary-600)', borderRadius: '4px' }}></div>
-                </div>
-              </div>
-              
-              <div style={{ marginBottom: 'var(--spacing-md)' }}>
-                <div className="flex-between" style={{ marginBottom: 'var(--spacing-xs)' }}>
-                  <span>Node.js / Express</span>
-                  <span className="text-primary font-semibold">85%</span>
-                </div>
-                <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--gray-200)', borderRadius: '4px' }}>
-                  <div style={{ width: '85%', height: '100%', backgroundColor: 'var(--primary-600)', borderRadius: '4px' }}></div>
-                </div>
-              </div>
-              
+          <div className="prose" style={{ maxWidth: 'none' }}>
+            {config?.homePage?.markdownContent ? (
+              <ReactMarkdown>{config.homePage.markdownContent}</ReactMarkdown>
+            ) : (
               <div>
-                <div className="flex-between" style={{ marginBottom: 'var(--spacing-xs)' }}>
-                  <span>UI/UX Design</span>
-                  <span className="text-primary font-semibold">80%</span>
-                </div>
-                <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--gray-200)', borderRadius: '4px' }}>
-                  <div style={{ width: '80%', height: '100%', backgroundColor: 'var(--primary-600)', borderRadius: '4px' }}></div>
-                </div>
+                <h2>À propos de moi</h2>
+                <p>
+                  Développeur Full Stack passionné avec plus de 3 ans d'expérience dans la création 
+                  d'applications web modernes. Je me spécialise dans l'écosystème JavaScript/TypeScript, 
+                  avec une expertise particulière en React, Node.js et les architectures cloud.
+                </p>
               </div>
-            </Card>
+            )}
           </div>
         </div>
       </section>
