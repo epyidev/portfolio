@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "id": "1",
+    "title": "Site Portfolio",
+    "shortDescription": "Site web personnel avec React et TypeScript",
+    "longDescription": "# Portfolio Personnel\r\n\r\nCe projet est un site portfolio développé avec React, TypeScript et Express. Il comprend un système d'administration complet permettant de gérer les projets, articles de blog et paramètres du site.",
+    "thumbnail": "/uploads/portfolio-thumb.jpg",
+    "technologies": [
+      "React",
+      "TypeScript",
+      "Express",
+      "Node.js"
+    ],
+    "githubUrl": "https://github.com/example/portfolio",
+    "liveUrl": "https://portfolio.example.com",
+    "visibility": "public",
+    "order": 1,
+    "createdAt": "2025-01-15T10:00:00.000Z",
+    "updatedAt": "2025-07-31T13:27:39.928Z"
+  },
+  {
+    "id": "2",
+    "title": "Application E-commerce",
+    "shortDescription": "Plateforme de vente en ligne avec panier et paiement",
+    "longDescription": "# Application E-commerce\r\n\r\nApplication complète de e-commerce avec gestion des produits, panier d'achat, système de paiement Stripe et interface d'administration.",
+    "thumbnail": "/uploads/ecommerce-thumb.jpg",
+    "technologies": [
+      "Next.js",
+      "MongoDB",
+      "Stripe",
+      "Tailwind CSS"
+    ],
+    "githubUrl": "https://github.com/example/ecommerce",
+    "liveUrl": "https://shop.example.com",
+    "visibility": "public",
+    "order": 2,
+    "createdAt": "2025-01-10T14:30:00.000Z",
+    "updatedAt": "2025-07-31T13:27:45.304Z"
+  }
+]

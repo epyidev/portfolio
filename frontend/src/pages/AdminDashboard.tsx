@@ -1,13 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate, Link } from 'react-router-dom';
 import { LogOut, FileText, Briefcase, Settings, Download } from 'lucide-react';
 import { Button, Card, LoadingSpinner } from '../components/UI';
+import dashboardService, { type DashboardStats } from '../services/dashboardService';
 
 const AdminDashboard: React.FC = () => {
   const { isAuthenticated, user, logout, loading } = useAuth();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
 
-  if (loading) {
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      fetchStats();
+    }
+  }, [isAuthenticated, loading]);
+
+  const fetchStats = async () => {
+    try {
+      const dashboardStats = await dashboardService.getStats();
+      setStats(dashboardStats);
+    } catch (error) {
+      console.error('Erreur lors du chargement des statistiques:', error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  if (loading || statsLoading) {
     return (
       <div style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <LoadingSpinner size="lg" />
@@ -28,7 +48,7 @@ const AdminDashboard: React.FC = () => {
       title: 'Projets',
       description: 'Gérer les projets du portfolio',
       icon: Briefcase,
-      count: '8 projets',
+      count: `${stats?.projectsCount || 0} projet${(stats?.projectsCount || 0) > 1 ? 's' : ''}`,
       action: 'Gérer les projets',
       href: '/admin/projects'
     },
@@ -36,7 +56,7 @@ const AdminDashboard: React.FC = () => {
       title: 'Articles de blog',
       description: 'Créer et modifier les articles',
       icon: FileText,
-      count: '12 articles',
+      count: `${stats?.blogPostsCount || 0} article${(stats?.blogPostsCount || 0) > 1 ? 's' : ''}`,
       action: 'Gérer le blog',
       href: '/admin/blog'
     },
@@ -44,7 +64,7 @@ const AdminDashboard: React.FC = () => {
       title: 'CV',
       description: 'Uploader et gérer le CV téléchargeable',
       icon: Download,
-      count: 'PDF disponible',
+      count: stats?.hasCVFile ? 'PDF disponible' : 'Aucun CV',
       action: 'Gérer le CV',
       href: '/admin/cv'
     },
@@ -157,7 +177,7 @@ const AdminDashboard: React.FC = () => {
                   }}>
                     Dernière connexion
                   </h4>
-                  <p>{new Date().toLocaleDateString('fr-FR')}</p>
+                  <p>{stats?.lastLoginDate ? new Date(stats.lastLoginDate).toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR')}</p>
                 </div>
                 <div>
                   <h4 style={{ 

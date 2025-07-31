@@ -451,6 +451,27 @@ app.delete('/api/admin/cv', authenticateToken, (req, res) => {
   }
 });
 
+// Route pour récupérer les statistiques du dashboard
+app.get('/api/admin/dashboard/stats', authenticateToken, (req, res) => {
+  try {
+    const projects = dataService.getProjects();
+    const blogPosts = dataService.getBlogPosts();
+    const cvPath = path.join(__dirname, '../uploads/cv.pdf');
+    const hasCVFile = fs.existsSync(cvPath);
+
+    const stats = {
+      projectsCount: projects.length,
+      blogPostsCount: blogPosts.length,
+      hasCVFile,
+      lastLoginDate: new Date().toISOString()
+    };
+
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
+  }
+});
+
 // Initialisation d'un utilisateur admin par défaut
 const initializeAdmin = async () => {
   const users = dataService.getUsers();
