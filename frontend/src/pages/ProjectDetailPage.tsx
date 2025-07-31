@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import type { Project } from '../types';
 import projectService from '../services/projectService';
+import { getImageUrl } from '../services/api';
 import { LoadingSpinner } from '../components/UI';
 
 const ProjectDetailPage: React.FC = () => {
@@ -55,8 +56,8 @@ const ProjectDetailPage: React.FC = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', padding: 'var(--spacing-3xl) 0' }}>
-      <div className="container" style={{ maxWidth: '1024px' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--gray-50)' }}>
+      <div className="container" style={{ maxWidth: '1024px', padding: 'var(--spacing-2xl) var(--spacing-md)' }}>
         <Link 
           to="/portfolio" 
           style={{ 
@@ -66,7 +67,8 @@ const ProjectDetailPage: React.FC = () => {
             color: 'var(--primary-600)', 
             textDecoration: 'none',
             marginBottom: 'var(--spacing-2xl)',
-            transition: 'color 0.2s ease'
+            transition: 'color 0.2s ease',
+            fontSize: '0.95rem'
           }}
           onMouseOver={(e) => e.currentTarget.style.color = 'var(--primary-700)'}
           onMouseOut={(e) => e.currentTarget.style.color = 'var(--primary-600)'}
@@ -75,39 +77,86 @@ const ProjectDetailPage: React.FC = () => {
           <span>Retour au portfolio</span>
         </Link>
 
-        <article className="card">
+        <article style={{ 
+          backgroundColor: 'white', 
+          borderRadius: 'var(--border-radius)',
+          padding: 'var(--spacing-2xl)',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+        }}>
           {project.thumbnail && (
             <img
-              src={`http://localhost:3001${project.thumbnail}`}
+              src={getImageUrl(project.thumbnail)}
               alt={project.title}
               style={{
                 width: '100%',
-                height: '256px',
+                height: '300px',
                 objectFit: 'cover',
                 borderRadius: 'var(--border-radius)',
-                marginBottom: 'var(--spacing-xl)'
+                marginBottom: 'var(--spacing-2xl)'
+              }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
               }}
             />
           )}
           
-          <h1 style={{ 
-            fontSize: '2.5rem', 
-            fontWeight: 'bold', 
-            marginBottom: 'var(--spacing-md)' 
-          }}>
-            {project.title}
-          </h1>
-          <p style={{ 
-            fontSize: '1.25rem', 
-            color: 'var(--gray-600)', 
-            marginBottom: 'var(--spacing-2xl)' 
-          }}>
-            {project.shortDescription}
-          </p>
+          <header style={{ marginBottom: 'var(--spacing-2xl)' }}>
+            <h1 style={{ 
+              fontSize: '2.5rem', 
+              fontWeight: '700', 
+              marginBottom: 'var(--spacing-md)',
+              lineHeight: '1.2'
+            }}>
+              {project.title}
+            </h1>
+            
+            <p style={{ 
+              fontSize: '1.25rem', 
+              color: 'var(--gray-600)', 
+              marginBottom: 'var(--spacing-lg)',
+              lineHeight: '1.6'
+            }}>
+              {project.shortDescription}
+            </p>
+
+            {/* Tags */}
+            {project.tags && project.tags.length > 0 && (
+              <div style={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: 'var(--spacing-sm)' 
+              }}>
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    style={{ 
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 'var(--spacing-xs)',
+                      padding: 'var(--spacing-sm) var(--spacing-md)', 
+                      backgroundColor: 'var(--primary-100)', 
+                      color: 'var(--primary-800)', 
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      borderRadius: '9999px' 
+                    }}
+                  >
+                    <Tag size={14} />
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </header>
           
-          <div className="markdown-content">
+          <div style={{ 
+            fontSize: '1.1rem',
+            lineHeight: '1.7',
+            color: 'var(--gray-800)'
+          }}>
             <ReactMarkdown>
-              {project.longDescription}
+              {project.longDescription || project.content || 'Aucune description détaillée disponible.'}
             </ReactMarkdown>
           </div>
         </article>

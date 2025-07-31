@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { HomePage, PortfolioPage, AdminLoginPage, AdminDashboard } from './pages';
+import { HomePage, PortfolioPage, AdminLoginPage, AdminDashboard, ProjectDetailPage } from './pages';
 import AdminProjects from './pages/AdminProjects';
 import AdminSettings from './pages/AdminSettings';
 import AdminCV from './pages/AdminCV';
@@ -20,6 +20,11 @@ function App() {
           <Route path="/portfolio" element={
             <Layout>
               <PortfolioPage />
+            </Layout>
+          } />
+          <Route path="/portfolio/:id" element={
+            <Layout>
+              <ProjectDetailPage />
             </Layout>
           } />
           

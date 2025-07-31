@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, Tag } from 'lucide-react';
 import { Button, Card, LoadingSpinner, Input } from '../components/UI';
 import projectService from '../services/projectService';
@@ -171,106 +172,108 @@ const PortfolioPage: React.FC = () => {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xl)' }}>
               {filteredProjects.map((project) => (
-                <Card key={project.id} hover>
-                  <div style={{ display: 'flex', gap: 'var(--spacing-lg)', alignItems: 'flex-start' }}>
-                    {/* Image du projet */}
-                    <div style={{ 
-                      width: '200px',
-                      height: '140px',
-                      backgroundColor: 'var(--gray-200)', 
-                      borderRadius: 'var(--border-radius)', 
-                      flexShrink: 0,
-                      overflow: 'hidden' 
-                    }}>
-                    {project.thumbnail ? (
-                      <img
-                        src={getImageUrl(project.thumbnail)}
-                        alt={project.title}
-                        style={{ 
+                <Link key={project.id} to={`/portfolio/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Card hover>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-lg)', alignItems: 'flex-start' }}>
+                      {/* Image du projet */}
+                      <div style={{ 
+                        width: '200px',
+                        height: '140px',
+                        backgroundColor: 'var(--gray-200)', 
+                        borderRadius: 'var(--border-radius)', 
+                        flexShrink: 0,
+                        overflow: 'hidden' 
+                      }}>
+                      {project.thumbnail ? (
+                        <img
+                          src={getImageUrl(project.thumbnail)}
+                          alt={project.title}
+                          style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            objectFit: 'cover', 
+                            transition: 'transform 0.3s ease' 
+                          }}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.innerHTML = `
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--gray-400);">
+                                  <svg style="width: 48px; height: 48px;" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                  </svg>
+                                </div>
+                              `;
+                            }
+                          }}
+                        />
+                      ) : (
+                        <div style={{ 
                           width: '100%', 
                           height: '100%', 
-                          objectFit: 'cover', 
-                          transition: 'transform 0.3s ease' 
-                        }}
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const parent = target.parentElement;
-                          if (parent) {
-                            parent.innerHTML = `
-                              <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--gray-400);">
-                                <svg style="width: 48px; height: 48px;" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                                </svg>
-                              </div>
-                            `;
-                          }
-                        }}
-                      />
-                    ) : (
-                      <div style={{ 
-                        width: '100%', 
-                        height: '100%', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center', 
-                        color: 'var(--gray-400)' 
-                      }}>
-                        <svg style={{ width: '48px', height: '48px' }} fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                    </div>
-
-                    {/* Contenu du projet */}
-                    <div style={{ flex: 1 }}>
-                      <h3 style={{ 
-                        fontSize: '1.5rem', 
-                        fontWeight: '600', 
-                        marginBottom: 'var(--spacing-sm)' 
-                      }}>
-                        {project.title}
-                      </h3>
-                      <p style={{ 
-                        color: 'var(--gray-600)', 
-                        marginBottom: 'var(--spacing-md)',
-                        fontSize: '1rem',
-                        lineHeight: '1.6'
-                      }}>
-                        {project.shortDescription}
-                      </p>
-                      
-                      {/* Tags */}
-                      {project.tags && project.tags.length > 0 && (
-                        <div style={{ 
                           display: 'flex', 
-                          flexWrap: 'wrap', 
-                          gap: 'var(--spacing-sm)' 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          color: 'var(--gray-400)' 
                         }}>
-                          {project.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              style={{ 
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 'var(--spacing-xs)',
-                                padding: 'var(--spacing-xs) var(--spacing-sm)', 
-                                backgroundColor: 'var(--gray-100)', 
-                                color: 'var(--gray-700)', 
-                                fontSize: '0.75rem', 
-                                borderRadius: '9999px' 
-                              }}
-                            >
-                              <Tag size={10} />
-                              {tag}
-                            </span>
-                          ))}
+                          <svg style={{ width: '48px', height: '48px' }} fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                          </svg>
                         </div>
                       )}
+                      </div>
+
+                      {/* Contenu du projet */}
+                      <div style={{ flex: 1 }}>
+                        <h3 style={{ 
+                          fontSize: '1.5rem', 
+                          fontWeight: '600', 
+                          marginBottom: 'var(--spacing-sm)' 
+                        }}>
+                          {project.title}
+                        </h3>
+                        <p style={{ 
+                          color: 'var(--gray-600)', 
+                          marginBottom: 'var(--spacing-md)',
+                          fontSize: '1rem',
+                          lineHeight: '1.6'
+                        }}>
+                          {project.shortDescription}
+                        </p>
+                        
+                        {/* Tags */}
+                        {project.tags && project.tags.length > 0 && (
+                          <div style={{ 
+                            display: 'flex', 
+                            flexWrap: 'wrap', 
+                            gap: 'var(--spacing-sm)' 
+                          }}>
+                            {project.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                style={{ 
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 'var(--spacing-xs)',
+                                  padding: 'var(--spacing-xs) var(--spacing-sm)', 
+                                  backgroundColor: 'var(--gray-100)', 
+                                  color: 'var(--gray-700)', 
+                                  fontSize: '0.75rem', 
+                                  borderRadius: '9999px' 
+                                }}
+                              >
+                                <Tag size={10} />
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}
