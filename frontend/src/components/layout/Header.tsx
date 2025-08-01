@@ -106,14 +106,6 @@ const Header: React.FC = () => {
           </div>
         )}
       </div>
-      
-      {/* Overlay pour fermer le menu mobile */}
-      {isMenuOpen && (
-        <div 
-          className="mobile-menu-overlay"
-          onClick={() => setIsMenuOpen(false)}
-        />
-      )}
     </header>
   );
 };

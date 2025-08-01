@@ -151,7 +151,6 @@ a {
   color: var(--text-primary);
   text-decoration: none;
   transition: var(--transition-fast);
-  border-bottom: 1px solid transparent;
 }
 
 a:hover {
@@ -376,6 +375,7 @@ a:hover {
   border-bottom: var(--border-width) solid var(--border-primary);
   padding: var(--spacing-4xl) 0;
   text-align: center;
+  margin-top: 80px;
 }
 
 .hero h1 {
@@ -693,17 +693,6 @@ a:hover {
       background-color: var(--bg-primary);
       border-bottom: var(--border-width) solid var(--border-primary);
     }
-  }
-}
-
-/* Ajustement pour le contenu qui suit le header fixe */
-body {
-  padding-top: 80px;
-}
-
-@media (max-width: 768px) {
-  body {
-    padding-top: 70px;
   }
 }
 

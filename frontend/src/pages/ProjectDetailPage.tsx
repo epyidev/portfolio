@@ -104,8 +104,6 @@ const ProjectDetailPage: React.FC = () => {
           border: `var(--border-width) solid var(--border-primary)`,
           borderRadius: 'var(--border-radius)',
           padding: 'var(--spacing-2xl)',
-          maxWidth: '1024px',
-          margin: '0 auto'
         }}>
           {project.thumbnail && (
             <img

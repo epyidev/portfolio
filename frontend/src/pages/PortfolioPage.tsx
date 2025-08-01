@@ -58,8 +58,7 @@ const PortfolioPage: React.FC = () => {
         <div className="container">
           <h1>Mon Portfolio</h1>
           <p>
-            Découvrez mes projets les plus récents et explorez les technologies 
-            que j'utilise pour créer des applications web modernes et performantes.
+            Découvrez mes réalisations que j'ai pu faire lors de mes différentes expériences professionnelles et projets personnels.
           </p>
         </div>
       </section>
@@ -70,16 +69,15 @@ const PortfolioPage: React.FC = () => {
         border: 'none',
         borderBottom: '1px solid var(--border-primary)' 
       }}>
-        <div className="container" style={{ padding: 'var(--spacing-xl) 0' }}>
+        <div className="container" style={{ marginTop: '40px', marginBottom: '40px' }}>
           <div style={{ 
             display: 'flex', 
-            flexDirection: 'column', 
+            flexDirection: 'row', 
             gap: 'var(--spacing-md)', 
             alignItems: 'center' 
           }}>
             <div style={{ 
               flex: 1, 
-              maxWidth: '500px', 
               position: 'relative',
               width: '100%'
             }}>
