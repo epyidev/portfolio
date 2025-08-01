@@ -374,18 +374,25 @@ a:hover {
   background-color: var(--bg-primary);
   border-bottom: var(--border-width) solid var(--border-primary);
   padding: var(--spacing-4xl) 0;
-  text-align: center;
+  /* text-align: center; */
   margin-top: 80px;
+}
+
+.hero.center {
+  text-align: center;
 }
 
 .hero h1 {
   margin-bottom: var(--spacing-lg);
 }
 
+.hero.center p {
+  max-width: 600px;
+}
+
 .hero p {
   font-size: var(--text-lg);
   color: var(--text-secondary);
-  max-width: 600px;
   margin: 0 auto var(--spacing-lg) auto;
 }
 

@@ -40,7 +40,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       {/* Section Hero */}
-      <section className="hero">
+      <section className="hero center">
         <div className="container">
           <h1>{config?.homePage?.greeting || 'Bonjour, je suis Pierre Lihoreau'}</h1>
           <p>

@@ -54,7 +54,7 @@ const PortfolioPage: React.FC = () => {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero center">
         <div className="container">
           <h1>Mon Portfolio</h1>
           <p>

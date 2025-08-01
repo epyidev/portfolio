@@ -114,8 +114,8 @@ const AdminSettings: React.FC = () => {
         <div className="container">
           <div>
             <Link to="/admin" style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
+              display: 'flex', 
+              alignItems: 'left', 
               gap: 'var(--spacing-xs)', 
               color: 'var(--text-secondary)', 
               textDecoration: 'none',
