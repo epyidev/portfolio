@@ -50,8 +50,6 @@ const Header: React.FC = () => {
     };
   }, [isMenuOpen]);
 
-  const currentYear = new Date().getFullYear();
-
   return (
     <>
       <header className="header">
@@ -144,17 +142,7 @@ const Header: React.FC = () => {
         </nav>
 
         <div className="mobile-menu-footer">
-          <p>© {currentYear} Pierre Lihoreau. Tous droits réservés.</p>
-          <p>
-              Powered by{' '}
-              <a 
-                href="https://lets-pop.fr/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                Let's PoP !
-              </a>
-            </p>
+          <p>© 2024 Pierre Lihoreau</p>
         </div>
       </div>
     </>
