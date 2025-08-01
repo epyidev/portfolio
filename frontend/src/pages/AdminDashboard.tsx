@@ -4,11 +4,14 @@ import { Navigate, Link } from 'react-router-dom';
 import { LogOut, Briefcase, Settings, Download } from 'lucide-react';
 import { Button, Card, LoadingSpinner } from '../components/UI';
 import dashboardService, { type DashboardStats } from '../services/dashboardService';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const AdminDashboard: React.FC = () => {
   const { isAuthenticated, user, logout, loading } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+
+  useDocumentTitle('Administration - Tableau de bord');
 
   useEffect(() => {
     if (isAuthenticated && !loading) {

@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Plus, Trash2, ExternalLink } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button, Card, Input, Textarea, LoadingSpinner } from '../components/UI';
 import configService, { type HomePageConfig } from '../services/configService';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import type { SocialNetwork } from '../types';
 
 const AdminSettings: React.FC = () => {
@@ -18,6 +19,8 @@ const AdminSettings: React.FC = () => {
     markdownContent: '',
     updatedAt: ''
   });
+
+  useDocumentTitle('Administration - Paramètres');
   const [socialNetworks, setSocialNetworks] = useState<SocialNetwork[]>([]);
   const [newSocial, setNewSocial] = useState({
     name: '',

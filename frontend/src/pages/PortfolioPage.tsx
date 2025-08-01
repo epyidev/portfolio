@@ -4,6 +4,7 @@ import { Search, Tag } from 'lucide-react';
 import { Card, LoadingSpinner, Input } from '../components/UI';
 import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import type { Project } from '../types';
 
 const PortfolioPage: React.FC = () => {
@@ -11,6 +12,8 @@ const PortfolioPage: React.FC = () => {
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useDocumentTitle('Portfolio');
 
   useEffect(() => {
     const fetchProjects = async () => {

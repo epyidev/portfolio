@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import { Button, Card, Input } from '../components/UI';
 import { useAuth } from '../contexts/AuthContext';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const AdminLoginPage: React.FC = () => {
   const { isAuthenticated, login } = useAuth();
@@ -14,6 +15,8 @@ const AdminLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useDocumentTitle('Administration - Connexion');
 
   // Rediriger si déjà connecté
   if (isAuthenticated) {

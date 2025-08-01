@@ -4,6 +4,7 @@ import { ArrowLeft, Download, Trash2, FileText, Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button, Card, Input, LoadingSpinner } from '../components/UI';
 import configService from '../services/configService';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const AdminCV: React.FC = () => {
   const { isAuthenticated, loading: authLoading } = useAuth();
@@ -12,6 +13,8 @@ const AdminCV: React.FC = () => {
   const [hasCV, setHasCV] = useState(false);
   const [fileName, setFileName] = useState('');
   const [uploadMessage, setUploadMessage] = useState('');
+
+  useDocumentTitle('Administration - CV');
 
   if (authLoading) {
     return (

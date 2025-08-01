@@ -6,12 +6,15 @@ import type { Project } from '../types';
 import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
 import { LoadingSpinner } from '../components/UI';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useDocumentTitle(project?.title || 'Projet');
 
   useEffect(() => {
     const fetchProject = async () => {

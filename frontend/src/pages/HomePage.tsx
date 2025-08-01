@@ -5,12 +5,15 @@ import ReactMarkdown from 'react-markdown';
 import { Button, LoadingSpinner } from '../components/UI';
 import projectService from '../services/projectService';
 import configService from '../services/configService';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import type { Config } from '../types';
 
 const HomePage: React.FC = () => {
   const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  useDocumentTitle('Accueil');
 
   useEffect(() => {
     const fetchData = async () => {

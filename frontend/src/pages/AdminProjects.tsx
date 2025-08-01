@@ -6,6 +6,7 @@ import { Button, Card, LoadingSpinner, Modal } from '../components/UI';
 import ProjectForm from '../components/ProjectForm';
 import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import type { Project } from '../types';
 
 const AdminProjects: React.FC = () => {
@@ -14,6 +15,8 @@ const AdminProjects: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+
+  useDocumentTitle('Administration - Projets');
 
   if (authLoading) {
     return (
