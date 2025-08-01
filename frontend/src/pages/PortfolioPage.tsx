@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Tag } from 'lucide-react';
-import { Button, Card, LoadingSpinner, Input } from '../components/UI';
+import { Card, LoadingSpinner, Input } from '../components/UI';
 import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
 import type { Project } from '../types';
