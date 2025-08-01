@@ -7,6 +7,7 @@ export interface HomePageConfig {
   contactEmail: string;
   contactPhone: string;
   markdownContent: string;
+  heroBackgroundImage?: string;
   updatedAt: string;
 }
 
@@ -52,6 +53,39 @@ const configService = {
 
   getDownloadCVUrl(): string {
     return `${api.defaults.baseURL}/cv/download`;
+  },
+
+  // Gestion des images de fond hero
+  async uploadHomePageHeroBackground(file: File): Promise<{ filename: string; url: string }> {
+    const formData = new FormData();
+    formData.append('heroBackground', file);
+    
+    const response = await api.post('/admin/config/homepage/hero-background', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  async uploadPortfolioHeroBackground(file: File): Promise<{ filename: string; url: string }> {
+    const formData = new FormData();
+    formData.append('heroBackground', file);
+    
+    const response = await api.post('/admin/config/portfolio/hero-background', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  async removeHomePageHeroBackground(): Promise<void> {
+    await api.delete('/admin/config/homepage/hero-background');
+  },
+
+  async removePortfolioHeroBackground(): Promise<void> {
+    await api.delete('/admin/config/portfolio/hero-background');
   },
 };
 

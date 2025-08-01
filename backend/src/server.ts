@@ -113,6 +113,33 @@ const uploadCV = multer({
   }
 });
 
+// Configuration multer pour les images de fond hero
+const heroBackgroundStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/hero-backgrounds/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'hero-bg-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const uploadHeroBackground = multer({ 
+  storage: heroBackgroundStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max pour les images de fond
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Seules les images (JPEG, PNG, WebP) sont autorisées pour les images de fond'));
+    }
+  }
+});
+
 // Routes publiques
 
 // Configuration et contenu de la page d'accueil
@@ -369,6 +396,86 @@ app.delete('/api/admin/config/social/:id', (req, res) => {
     res.json({ message: 'Réseau social supprimé avec succès' });
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la suppression du réseau social' });
+  }
+});
+
+// Upload d'image de fond pour la page d'accueil
+app.post('/api/admin/config/homepage/hero-background', (req, res) => {
+  uploadHeroBackground.single('heroBackground')(req, res, (err) => {
+    if (err) {
+      console.error('Erreur upload image de fond page d\'accueil:', err);
+      return res.status(400).json({ error: err.message || 'Erreur lors de l\'upload de l\'image' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Aucun fichier fourni' });
+    }
+
+    try {
+      const imageUrl = `/uploads/hero-backgrounds/${req.file.filename}`;
+      
+      // Mettre à jour la configuration
+      dataService.updateHomePage({ heroBackgroundImage: imageUrl });
+
+      res.json({
+        filename: req.file.filename,
+        url: imageUrl,
+        message: 'Image de fond de la page d\'accueil mise à jour avec succès'
+      });
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error);
+      res.status(500).json({ error: 'Erreur lors de la sauvegarde de l\'image' });
+    }
+  });
+});
+
+// Upload d'image de fond pour la page portfolio
+app.post('/api/admin/config/portfolio/hero-background', (req, res) => {
+  uploadHeroBackground.single('heroBackground')(req, res, (err) => {
+    if (err) {
+      console.error('Erreur upload image de fond portfolio:', err);
+      return res.status(400).json({ error: err.message || 'Erreur lors de l\'upload de l\'image' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Aucun fichier fourni' });
+    }
+
+    try {
+      const imageUrl = `/uploads/hero-backgrounds/${req.file.filename}`;
+      
+      // Mettre à jour la configuration
+      dataService.updatePortfolioPage({ heroBackgroundImage: imageUrl });
+
+      res.json({
+        filename: req.file.filename,
+        url: imageUrl,
+        message: 'Image de fond du portfolio mise à jour avec succès'
+      });
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error);
+      res.status(500).json({ error: 'Erreur lors de la sauvegarde de l\'image' });
+    }
+  });
+});
+
+// Supprimer l'image de fond de la page d'accueil
+app.delete('/api/admin/config/homepage/hero-background', (req, res) => {
+  try {
+    dataService.updateHomePage({ heroBackgroundImage: '' });
+    res.json({ message: 'Image de fond de la page d\'accueil supprimée avec succès' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la suppression de l\'image de fond' });
+  }
+});
+
+// Supprimer l'image de fond du portfolio
+app.delete('/api/admin/config/portfolio/hero-background', (req, res) => {
+  try {
+    dataService.updatePortfolioPage({ heroBackgroundImage: '' });
+    res.json({ message: 'Image de fond du portfolio supprimée avec succès' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la suppression de l\'image de fond' });
   }
 });
 

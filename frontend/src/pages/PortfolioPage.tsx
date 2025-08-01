@@ -3,32 +3,38 @@ import { Link } from 'react-router-dom';
 import { Search, Tag } from 'lucide-react';
 import { Card, LoadingSpinner, Input } from '../components/UI';
 import projectService from '../services/projectService';
+import configService from '../services/configService';
 import { getImageUrl } from '../services/api';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
-import type { Project } from '../types';
+import type { Project, Config } from '../types';
 
 const PortfolioPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
   useDocumentTitle('Portfolio');
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
       try {
-        const projectsData = await projectService.getProjects();
+        const [projectsData, siteConfig] = await Promise.all([
+          projectService.getProjects(),
+          configService.getConfig(),
+        ]);
         setProjects(projectsData);
         setFilteredProjects(projectsData);
+        setConfig(siteConfig);
       } catch (error) {
-        console.error('Erreur lors du chargement des projets:', error);
+        console.error('Erreur lors du chargement des données:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProjects();
+    fetchData();
   }, []);
 
   // Filtrage des projets
@@ -57,7 +63,15 @@ const PortfolioPage: React.FC = () => {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Hero Section */}
-      <section className="hero center">
+      <section 
+        className="hero center"
+        style={config?.portfolioPage?.heroBackgroundImage ? {
+          backgroundImage: `url(${getImageUrl(config.portfolioPage.heroBackgroundImage)})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        } : {}}
+      >
         <div className="container">
           <h1>Mon Portfolio</h1>
           <p>

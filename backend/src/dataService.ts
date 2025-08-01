@@ -28,6 +28,11 @@ class DataService {
             contactEmail: "contact@example.com",
             contactPhone: "+33 1 23 45 67 89",
             markdownContent: "# À propos de moi\n\nContenu par défaut de la page d'accueil en markdown.",
+            heroBackgroundImage: '',
+            updatedAt: new Date().toISOString()
+          },
+          portfolioPage: {
+            heroBackgroundImage: '',
             updatedAt: new Date().toISOString()
           },
           socialNetworks: [
@@ -132,6 +137,16 @@ class DataService {
     config.homePage = { 
       ...config.homePage, 
       ...homePageData, 
+      updatedAt: new Date().toISOString() 
+    };
+    this.saveConfig(config);
+  }
+
+  updatePortfolioPage(portfolioPageData: Partial<Config['portfolioPage']>): void {
+    const config = this.getConfig();
+    config.portfolioPage = { 
+      ...config.portfolioPage, 
+      ...portfolioPageData, 
       updatedAt: new Date().toISOString() 
     };
     this.saveConfig(config);

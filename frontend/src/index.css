@@ -273,13 +273,13 @@ a:hover {
 .btn-outline {
   background-color: transparent;
   color: var(--text-primary);
-  border-color: var(--border-secondary);
+  border-color: var(--text-primary);
 }
 
 .btn-outline:hover:not(:disabled) {
-  background-color: var(--bg-hover);
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
   border-color: var(--text-primary);
-  color: var(--text-primary);
 }
 
 .btn-ghost {
@@ -370,11 +370,51 @@ a:hover {
 
 /* Sections principales */
 .hero {
+  position: relative;
   background-color: var(--bg-primary);
   border-bottom: var(--border-width) solid var(--border-primary);
   padding: var(--spacing-4xl) 0;
   /* text-align: center; */
   margin-top: 80px;
+  overflow: hidden;
+}
+
+/* Appliquer le flou directement sur les sections hero avec image de fond */
+.hero[style*="background-image"] {
+  position: relative;
+}
+
+.hero[style*="background-image"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: inherit;
+  background-size: inherit;
+  background-position: inherit;
+  background-repeat: inherit;
+  filter: blur(5px);
+  z-index: 0;
+}
+
+.hero[style*="background-image"]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+  z-index: 1;
+}
+
+/* S'assurer que le contenu reste net et au-dessus */
+.hero .container {
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(0px);
 }
 
 .hero.center {

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Plus, Trash2, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, ExternalLink, Image, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button, Card, Input, Textarea, LoadingSpinner } from '../components/UI';
 import configService, { type HomePageConfig } from '../services/configService';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { getImageUrl } from '../services/api';
 import type { SocialNetwork } from '../types';
 
 const AdminSettings: React.FC = () => {
@@ -27,6 +28,9 @@ const AdminSettings: React.FC = () => {
     url: '',
     icon: ''
   });
+  const [portfolioHeroBackground, setPortfolioHeroBackground] = useState<string>('');
+  const [uploadingHomeHero, setUploadingHomeHero] = useState(false);
+  const [uploadingPortfolioHero, setUploadingPortfolioHero] = useState(false);
 
   if (authLoading) {
     return (
@@ -49,6 +53,7 @@ const AdminSettings: React.FC = () => {
       const config = await configService.getConfig();
       setHomePageConfig(config.homePage);
       setSocialNetworks(config.socialNetworks);
+      setPortfolioHeroBackground(config.portfolioPage?.heroBackgroundImage || '');
     } catch (error) {
       console.error('Erreur lors du chargement de la configuration:', error);
     } finally {
@@ -99,6 +104,66 @@ const AdminSettings: React.FC = () => {
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
       alert('Erreur lors de la suppression');
+    }
+  };
+
+  const handleUploadHomeHeroBackground = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingHomeHero(true);
+    try {
+      await configService.uploadHomePageHeroBackground(file);
+      await fetchConfig();
+    } catch (error) {
+      console.error('Erreur lors de l\'upload:', error);
+      alert('Erreur lors de l\'upload de l\'image');
+    } finally {
+      setUploadingHomeHero(false);
+    }
+  };
+
+  const handleUploadPortfolioHeroBackground = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingPortfolioHero(true);
+    try {
+      await configService.uploadPortfolioHeroBackground(file);
+      await fetchConfig();
+    } catch (error) {
+      console.error('Erreur lors de l\'upload:', error);
+      alert('Erreur lors de l\'upload de l\'image');
+    } finally {
+      setUploadingPortfolioHero(false);
+    }
+  };
+
+  const handleRemoveHomeHeroBackground = async () => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer l\'image de fond de la page d\'accueil ?')) {
+      return;
+    }
+    
+    try {
+      await configService.removeHomePageHeroBackground();
+      await fetchConfig();
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      alert('Erreur lors de la suppression de l\'image');
+    }
+  };
+
+  const handleRemovePortfolioHeroBackground = async () => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer l\'image de fond du portfolio ?')) {
+      return;
+    }
+    
+    try {
+      await configService.removePortfolioHeroBackground();
+      await fetchConfig();
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      alert('Erreur lors de la suppression de l\'image');
     }
   };
 
@@ -196,6 +261,176 @@ const AdminSettings: React.FC = () => {
                     {saving ? 'Sauvegarde...' : 'Sauvegarder'}
                   </Button>
                 </div>
+              </div>
+            </Card>
+
+            {/* Gestion des images de fond hero */}
+            <Card>
+              <div style={{ marginBottom: 'var(--spacing-lg)' }}>
+                <h2>Images de fond des sections hero</h2>
+                <p className="text-gray">Configurez les images de fond affichées dans les sections hero des pages</p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xl)' }}>
+                
+                {/* Image de fond page d'accueil */}
+                <div>
+                  <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Page d'accueil</h3>
+                  
+                  {homePageConfig.heroBackgroundImage ? (
+                    <div style={{ marginBottom: 'var(--spacing-md)' }}>
+                      <div style={{ 
+                        position: 'relative',
+                        width: '300px',
+                        height: '150px',
+                        borderRadius: 'var(--border-radius)',
+                        overflow: 'hidden',
+                        border: `var(--border-width) solid var(--border-primary)`
+                      }}>
+                        <img
+                          src={getImageUrl(homePageConfig.heroBackgroundImage)}
+                          alt="Image de fond page d'accueil"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                        <button
+                          onClick={handleRemoveHomeHeroBackground}
+                          style={{
+                            position: 'absolute',
+                            top: 'var(--spacing-xs)',
+                            right: 'var(--spacing-xs)',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            border: 'none',
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            color: 'var(--text-primary)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'var(--transition-fast)'
+                          }}
+                          title="Supprimer l'image"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ 
+                      marginBottom: 'var(--spacing-md)',
+                      padding: 'var(--spacing-lg)',
+                      border: `2px dashed var(--border-secondary)`,
+                      borderRadius: 'var(--border-radius)',
+                      textAlign: 'center',
+                      color: 'var(--text-muted)'
+                    }}>
+                      <Image size={48} style={{ marginBottom: 'var(--spacing-sm)' }} />
+                      <p>Aucune image de fond configurée</p>
+                    </div>
+                  )}
+
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleUploadHomeHeroBackground}
+                      style={{ display: 'none' }}
+                      id="home-hero-upload"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => document.getElementById('home-hero-upload')?.click()}
+                      isLoading={uploadingHomeHero}
+                    >
+                      {uploadingHomeHero ? 'Upload...' : 'Changer l\'image'}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Image de fond portfolio */}
+                <div>
+                  <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Page Portfolio</h3>
+                  
+                  {portfolioHeroBackground ? (
+                    <div style={{ marginBottom: 'var(--spacing-md)' }}>
+                      <div style={{ 
+                        position: 'relative',
+                        width: '300px',
+                        height: '150px',
+                        borderRadius: 'var(--border-radius)',
+                        overflow: 'hidden',
+                        border: `var(--border-width) solid var(--border-primary)`
+                      }}>
+                        <img
+                          src={getImageUrl(portfolioHeroBackground)}
+                          alt="Image de fond portfolio"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                        <button
+                          onClick={handleRemovePortfolioHeroBackground}
+                          style={{
+                            position: 'absolute',
+                            top: 'var(--spacing-xs)',
+                            right: 'var(--spacing-xs)',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            border: 'none',
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            color: 'var(--text-primary)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'var(--transition-fast)'
+                          }}
+                          title="Supprimer l'image"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ 
+                      marginBottom: 'var(--spacing-md)',
+                      padding: 'var(--spacing-lg)',
+                      border: `2px dashed var(--border-secondary)`,
+                      borderRadius: 'var(--border-radius)',
+                      textAlign: 'center',
+                      color: 'var(--text-muted)'
+                    }}>
+                      <Image size={48} style={{ marginBottom: 'var(--spacing-sm)' }} />
+                      <p>Aucune image de fond configurée</p>
+                    </div>
+                  )}
+
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleUploadPortfolioHeroBackground}
+                      style={{ display: 'none' }}
+                      id="portfolio-hero-upload"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => document.getElementById('portfolio-hero-upload')?.click()}
+                      isLoading={uploadingPortfolioHero}
+                    >
+                      {uploadingPortfolioHero ? 'Upload...' : 'Changer l\'image'}
+                    </Button>
+                  </div>
+                </div>
+
               </div>
             </Card>
 

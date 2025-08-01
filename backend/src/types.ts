@@ -26,6 +26,12 @@ export interface HomePageContent {
   contactEmail: string;
   contactPhone: string;
   markdownContent: string;
+  heroBackgroundImage?: string;
+  updatedAt: string;
+}
+
+export interface PortfolioPageContent {
+  heroBackgroundImage?: string;
   updatedAt: string;
 }
 
@@ -39,5 +45,6 @@ export interface SocialNetwork {
 
 export interface Config {
   homePage: HomePageContent;
+  portfolioPage: PortfolioPageContent;
   socialNetworks: SocialNetwork[];
 }

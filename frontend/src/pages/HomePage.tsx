@@ -6,6 +6,7 @@ import { Button, LoadingSpinner } from '../components/UI';
 import projectService from '../services/projectService';
 import configService from '../services/configService';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { getImageUrl } from '../services/api';
 import type { Config } from '../types';
 
 const HomePage: React.FC = () => {
@@ -43,7 +44,15 @@ const HomePage: React.FC = () => {
   return (
     <div>
       {/* Section Hero */}
-      <section className="hero center">
+      <section 
+        className="hero center"
+        style={config?.homePage?.heroBackgroundImage ? {
+          backgroundImage: `url(${getImageUrl(config.homePage.heroBackgroundImage)})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        } : {}}
+      >
         <div className="container">
           <h1>{config?.homePage?.greeting || 'Bonjour, je suis Pierre Lihoreau'}</h1>
           <p>
