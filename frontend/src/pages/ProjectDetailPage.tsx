@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import type { Project } from '../types';
 import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
@@ -187,7 +188,7 @@ const ProjectDetailPage: React.FC = () => {
               color: 'var(--text-primary)'
             }}
           >
-            <ReactMarkdown>
+            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
               {project.longDescription || project.content || 'Aucune description détaillée disponible.'}
             </ReactMarkdown>
           </div>

@@ -1,1 +1,45 @@
-{}
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "Professional portfolio website with admin panel",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node dist/server.js",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev:frontend": "cd frontend && npm run dev",
+        "build": "npm run build:clean && npm run build:backend && npm run build:frontend && npm run build:copy",
+    "build:clean": "rimraf dist",
+    "build:backend": "tsc",
+    "build:frontend": "cd frontend && npm run build",
+    "build:copy": "node scripts/copy-frontend.js",
+    "build:production": "./build.sh",
+    "clean": "rimraf dist",
+    "install:frontend": "cd frontend && npm install",
+    "postinstall": "npm run install:frontend && npm run build"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.8.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/cors": "^2.8.13",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/multer": "^1.4.7",
+    "@types/uuid": "^9.0.2",
+    "@types/node": "^20.4.5",
+    "typescript": "^5.1.6",
+    "ts-node-dev": "^2.0.0",
+    "rimraf": "^5.0.1",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3"
+  }
+}

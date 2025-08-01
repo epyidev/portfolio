@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import { Button, LoadingSpinner } from '../components/UI';
 import projectService from '../services/projectService';
 import configService from '../services/configService';
@@ -81,7 +82,7 @@ const HomePage: React.FC = () => {
         <div className="container">
           <div className="prose" style={{ maxWidth: 'none' }}>
             {config?.homePage?.markdownContent ? (
-              <ReactMarkdown>{config.homePage.markdownContent}</ReactMarkdown>
+              <ReactMarkdown rehypePlugins={[rehypeRaw]}>{config.homePage.markdownContent}</ReactMarkdown>
             ) : (
               <div>
                 <h2>À propos de moi</h2>

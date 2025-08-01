@@ -14,51 +14,119 @@ import { authenticateToken, requireAdmin, JWT_SECRET, AuthRequest } from './auth
 import { User, Project } from './types';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.SERVER_PORT || process.env.PORT || 3001;
 
-// Middleware de sécurité
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https:"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "http://localhost:5173", "http://localhost:3000"],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'", "https:", "data:"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'self'"],
+// Fonction pour corriger les URLs relatives en URLs absolues
+const fixImageUrls = (req: express.Request, data: any): any => {
+  if (!data) return data;
+  
+  const protocol = req.get('X-Forwarded-Proto') || req.protocol || 'https';
+  const host = req.get('Host') || req.get('X-Forwarded-Host') || req.headers.host || `localhost:${PORT}`;
+  const baseUrl = `${protocol}://${host}`;
+  
+  // Récursivement corriger toutes les URLs d'images
+  const fixUrls = (obj: any): any => {
+    if (typeof obj === 'string') {
+      // Corriger les URLs qui commencent par /uploads/ ou qui contiennent localhost
+      if (obj.startsWith('/uploads/')) {
+        return `${baseUrl}${obj}`;
+      }
+      if (obj.includes('localhost:') && obj.includes('/uploads/')) {
+        return obj.replace(/https?:\/\/localhost:\d+/, baseUrl);
+      }
+      return obj;
     }
-  },
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
-app.use(cors({
-  origin: process.env.FRONTEND_URL || ['http://localhost:3000', 'http://localhost:5173'],
-  credentials: true
+    
+    if (Array.isArray(obj)) {
+      return obj.map(fixUrls);
+    }
+    
+    if (obj && typeof obj === 'object') {
+      const fixed: any = {};
+      for (const key in obj) {
+        fixed[key] = fixUrls(obj[key]);
+      }
+      return fixed;
+    }
+    
+    return obj;
+  };
+  
+  return fixUrls(data);
+};
+
+// Fonction utilitaire pour générer des URLs absolues pour les uploads
+const getFullUploadUrl = (req: express.Request, relativePath: string) => {
+  // Si une URL publique est définie dans les variables d'environnement, l'utiliser
+  if (process.env.PUBLIC_URL) {
+    const finalUrl = `${process.env.PUBLIC_URL}${relativePath}`;
+    console.log(`🔍 Using PUBLIC_URL: ${finalUrl}`);
+    return finalUrl;
+  }
+  
+  // En production, forcer l'utilisation du domaine public
+  if (process.env.NODE_ENV === 'production') {
+    // Essayer de détecter le vrai domaine depuis les headers
+    const forwardedHost = req.get('X-Forwarded-Host') || req.get('Host');
+    
+    if (forwardedHost && !forwardedHost.includes('localhost') && !forwardedHost.includes('127.0.0.1') && !forwardedHost.includes('82.153.202.154')) {
+      const protocol = req.get('X-Forwarded-Proto') || 'https';
+      const cleanHost = forwardedHost.split(':')[0]; // Enlever le port si présent
+      const finalUrl = `${protocol}://${cleanHost}${relativePath}`;
+      console.log(`🔍 Production URL generated: ${finalUrl}`);
+      return finalUrl;
+    }
+    
+    // Fallback: utiliser le domaine connu
+    const finalUrl = `https://pierrelihoreau.lets-pop.fr${relativePath}`;
+    console.log(`🔍 Using hardcoded domain: ${finalUrl}`);
+    return finalUrl;
+  }
+  
+  // Fallback pour développement
+  const protocol = req.get('X-Forwarded-Proto') || req.protocol || 'https';
+  const host = req.get('Host') || req.get('X-Forwarded-Host') || req.headers.host || `localhost:${PORT}`;
+  
+  console.log(`🔍 Development URL - Protocol: ${protocol}, Host: ${host}, Path: ${relativePath}`);
+  
+  return `${protocol}://${host}${relativePath}`;
+};
+
+// Middleware de sécurité - Configuration minimale pour éviter les conflits HTTPS/HTTP
+app.use(helmet({
+  contentSecurityPolicy: false, // Désactiver complètement la CSP qui cause les problèmes
+  crossOriginResourcePolicy: false,
+  crossOriginOpenerPolicy: false,
+  originAgentCluster: false
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limite de 100 requêtes par fenêtre
-});
-app.use(limiter);
+// CORS - configuration pour production HTTPS et développement
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? true  // Permet toutes les origines en production
+    : ['http://localhost:3000', 'http://localhost:5173'],
+  credentials: false
+};
+app.use(cors(corsOptions));
+
+// Trust proxy pour HTTPS (important pour Pterodactyl avec SSL)
+app.set('trust proxy', 1);
+
+// Ne pas forcer HTTPS - laissons Pterodactyl gérer ça
+
+// Rate limiting désactivé pour un portfolio personnel
+// Plus de limites de requêtes - idéal pour les images et assets
 
 // Middleware pour parser JSON
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Servir les fichiers statiques (images) avec CORS
-app.use('/uploads', (req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin === 'http://localhost:5173' || origin === 'http://localhost:3000') {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-}, express.static(path.join(__dirname, '../uploads')));
+// Servir les fichiers statiques (images) avec optimisations
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
+  maxAge: '1y', // Cache pendant 1 an
+  etag: true,
+  lastModified: true
+}));
 
 // Configuration multer pour l'upload de fichiers
 const storage = multer.diskStorage({
@@ -142,11 +210,22 @@ const uploadHeroBackground = multer({
 
 // Routes publiques
 
+// Route de test
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Serveur fonctionne !', 
+    port: PORT, 
+    env: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Configuration et contenu de la page d'accueil
 app.get('/api/config', (req, res) => {
   try {
     const config = dataService.getConfig();
-    res.json(config);
+    const fixedConfig = fixImageUrls(req, config);
+    res.json(fixedConfig);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération de la configuration' });
   }
@@ -158,7 +237,8 @@ app.get('/api/projects', (req, res) => {
     const projects = dataService.getProjects()
       .filter(project => project.visibility === 'public')
       .sort((a, b) => a.order - b.order);
-    res.json(projects);
+    const fixedProjects = fixImageUrls(req, projects);
+    res.json(fixedProjects);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération des projets' });
   }
@@ -171,7 +251,8 @@ app.get('/api/projects/:id', (req, res) => {
     if (!project || project.visibility === 'private') {
       return res.status(404).json({ error: 'Projet non trouvé' });
     }
-    res.json(project);
+    const fixedProject = fixImageUrls(req, project);
+    res.json(fixedProject);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération du projet' });
   }
@@ -215,7 +296,8 @@ app.use('/api/admin', authenticateToken, requireAdmin);
 app.get('/api/admin/projects', (req, res) => {
   try {
     const projects = dataService.getProjects().sort((a, b) => a.order - b.order);
-    res.json(projects);
+    const fixedProjects = fixImageUrls(req, projects);
+    res.json(fixedProjects);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération des projets' });
   }
@@ -253,7 +335,7 @@ app.post('/api/admin/projects', (req, res) => {
         shortDescription,
         longDescription,
         tags: parsedTags,
-        thumbnail: req.file ? `/uploads/${req.file.filename}` : '',
+        thumbnail: req.file ? getFullUploadUrl(req, `/uploads/${req.file.filename}`) : '',
         visibility: visibility || 'public',
         order: parseInt(order) || 0,
         createdAt: new Date().toISOString(),
@@ -301,7 +383,7 @@ app.put('/api/admin/projects/:id', (req, res) => {
       };
 
       if (req.file) {
-        updateData.thumbnail = `/uploads/${req.file.filename}`;
+        updateData.thumbnail = getFullUploadUrl(req, `/uploads/${req.file.filename}`);
         console.log('Mise à jour projet avec nouvelle thumbnail:', updateData.thumbnail);
       }
 
@@ -412,7 +494,7 @@ app.post('/api/admin/config/homepage/hero-background', (req, res) => {
     }
 
     try {
-      const imageUrl = `/uploads/hero-backgrounds/${req.file.filename}`;
+      const imageUrl = getFullUploadUrl(req, `/uploads/hero-backgrounds/${req.file.filename}`);
       
       // Mettre à jour la configuration
       dataService.updateHomePage({ heroBackgroundImage: imageUrl });
@@ -442,7 +524,7 @@ app.post('/api/admin/config/portfolio/hero-background', (req, res) => {
     }
 
     try {
-      const imageUrl = `/uploads/hero-backgrounds/${req.file.filename}`;
+      const imageUrl = getFullUploadUrl(req, `/uploads/hero-backgrounds/${req.file.filename}`);
       
       // Mettre à jour la configuration
       dataService.updatePortfolioPage({ heroBackgroundImage: imageUrl });
@@ -488,7 +570,7 @@ app.post('/api/admin/upload', upload.single('file'), (req, res) => {
     
     res.json({ 
       filename: req.file.filename,
-      url: `/uploads/${req.file.filename}`
+      url: getFullUploadUrl(req, `/uploads/${req.file.filename}`)
     });
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de l\'upload du fichier' });
@@ -504,7 +586,7 @@ app.post('/api/admin/cv/upload', authenticateToken, uploadCV.single('file'), (re
     
     res.json({ 
       filename: req.file.filename,
-      url: `/uploads/${req.file.filename}`,
+      url: getFullUploadUrl(req, `/uploads/${req.file.filename}`),
       message: 'CV uploadé avec succès'
     });
   } catch (error) {
@@ -576,10 +658,73 @@ const initializeAdmin = async () => {
   }
 };
 
+// Servir les fichiers statiques du frontend (en production)
+if (process.env.NODE_ENV === 'production') {
+  // Simple : les fichiers frontend sont dans /dist
+  const frontendPath = path.join(__dirname, '.');  // __dirname pointe déjà vers dist/
+  console.log(`🔍 Looking for frontend files in: ${frontendPath}`);
+  
+  // Lister tous les fichiers dans le dossier pour debug
+  try {
+    const allFiles = fs.readdirSync(frontendPath);
+    console.log(`📁 All files in ${frontendPath}:`, allFiles);
+  } catch (err) {
+    console.error(`❌ Cannot read directory ${frontendPath}:`, err);
+  }
+  
+  const indexPath = path.join(frontendPath, 'index.html');
+  console.log(`🔍 Looking for index.html at: ${indexPath}`);
+  
+  if (fs.existsSync(indexPath)) {
+    console.log(`✅ Frontend files found! Serving from: ${frontendPath}`);
+    
+    // Servir les fichiers statiques avec cache optimisé
+    app.use(express.static(frontendPath, {
+      maxAge: '1y', // Cache pendant 1 an pour les assets
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, path) => {
+        // Cache plus court pour index.html
+        if (path.endsWith('index.html')) {
+          res.setHeader('Cache-Control', 'no-cache');
+        }
+      }
+    }));
+    
+    // Route catch-all pour servir index.html (SPA routing)
+    app.get('*', (req, res) => {
+      // Skip API routes et fichiers statiques
+      if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+        return res.status(404).json({ error: 'Route non trouvée' });
+      }
+      
+      console.log(`📄 Serving index.html for route: ${req.path}`);
+      res.sendFile(indexPath);
+    });
+  } else {
+    console.error(`❌ index.html not found at: ${indexPath}`);
+    console.error('❌ Frontend files must be built and placed in the dist folder!');
+  }
+}
+
 // Démarrage du serveur
 app.listen(PORT, async () => {
   await initializeAdmin();
   console.log(`Serveur démarré sur le port ${PORT}`);
+  console.log(`Mode: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`SERVER_PORT: ${process.env.SERVER_PORT}`);
+  console.log(`Dist directory: ${path.join(__dirname, '../dist')}`);
+  
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`Application accessible sur http://localhost:${PORT}`);
+    // Vérifier si le dossier dist existe
+    const distExists = fs.existsSync(path.join(__dirname, '../dist'));
+    console.log(`Dossier dist existe: ${distExists}`);
+    if (distExists) {
+      const distFiles = fs.readdirSync(path.join(__dirname, '../dist'));
+      console.log(`Fichiers dans dist:`, distFiles);
+    }
+  }
 });
 
 export default app;
