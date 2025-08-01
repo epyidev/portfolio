@@ -13,6 +13,20 @@
     "visibility": "public",
     "order": 0,
     "createdAt": "2025-07-31T15:25:18.523Z",
-    "updatedAt": "2025-07-31T15:37:26.242Z"
+    "updatedAt": "2025-07-31T17:36:11.618Z"
+  },
+  {
+    "id": "e096276b-3ce4-457c-8882-5fdd4b1423cf",
+    "title": "Prout",
+    "shortDescription": "haha c'est drole",
+    "longDescription": "Salut les potes\r\n\r\n",
+    "tags": [
+      "Audiovisuel"
+    ],
+    "thumbnail": "/uploads/thumbnail-1753981431502-889939595.png",
+    "visibility": "public",
+    "order": 99,
+    "createdAt": "2025-07-31T17:03:51.515Z",
+    "updatedAt": "2025-07-31T17:03:51.515Z"
   }
 ]

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Shield } from 'lucide-react';
 
@@ -20,24 +20,46 @@ const Header: React.FC = () => {
 
   const isAdminPage = location.pathname.startsWith('/admin');
 
+  // Fermer le menu mobile lors du changement de route
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  // Fermer le menu avec la touche Escape
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isMenuOpen]);
+
+  // Empêcher le scroll du body quand le menu mobile est ouvert
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
   return (
     <header className="header">
       <div className="container">
         <div className="header-content">
           {/* Logo */}
           <Link to="/" className="logo">
-            Pierre Lihoreau
+            <span className="logo-text">Pierre Lihoreau</span>
             {isAdminPage && (
-              <span style={{ 
-                marginLeft: 'var(--spacing-sm)', 
-                padding: 'var(--spacing-xs) var(--spacing-sm)', 
-                backgroundColor: 'var(--primary-100)', 
-                color: 'var(--primary-700)', 
-                borderRadius: 'var(--border-radius)', 
-                fontSize: '0.75rem', 
-                fontWeight: '500' 
-              }}>
-                <Shield size={12} style={{ marginRight: '4px', display: 'inline' }} />
+              <span className="admin-badge">
+                <Shield size={12} />
                 ADMIN
               </span>
             )}
@@ -60,28 +82,38 @@ const Header: React.FC = () => {
           <button
             className="mobile-menu-button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Menu"
+            aria-label="Menu de navigation"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
         {/* Menu mobile */}
-        <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
-          <nav className="mobile-nav">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsMenuOpen(false)}
-                className={`nav-link ${isActivePath(item.path) ? 'active' : ''}`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
+        {isMenuOpen && (
+          <div className="mobile-menu">
+            <nav className="mobile-nav">
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`mobile-nav-link ${isActivePath(item.path) ? 'active' : ''}`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
       </div>
+      
+      {/* Overlay pour fermer le menu mobile */}
+      {isMenuOpen && (
+        <div 
+          className="mobile-menu-overlay"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
     </header>
   );
 };

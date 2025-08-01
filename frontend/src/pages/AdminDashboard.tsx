@@ -105,14 +105,18 @@ const AdminDashboard: React.FC = () => {
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-md)' }}>
                     <div style={{ 
                       padding: 'var(--spacing-sm)', 
-                      backgroundColor: 'var(--primary-100)', 
+                      backgroundColor: 'var(--bg-tertiary)', 
+                      border: `var(--border-width) solid var(--border-primary)`,
                       borderRadius: 'var(--border-radius)' 
                     }}>
-                      <IconComponent style={{ color: 'var(--primary-600)' }} size={24} />
+                      <IconComponent style={{ color: 'var(--text-secondary)' }} size={24} />
                     </div>
                     <div style={{ flex: 1 }}>
-                      <h3 style={{ marginBottom: 'var(--spacing-xs)' }}>{card.title}</h3>
-                      <p className="text-gray" style={{ marginBottom: 'var(--spacing-sm)' }}>
+                      <h3 style={{ marginBottom: 'var(--spacing-xs)', color: 'var(--text-primary)' }}>{card.title}</h3>
+                      <p style={{ 
+                        marginBottom: 'var(--spacing-sm)',
+                        color: 'var(--text-secondary)'
+                      }}>
                         {card.description}
                       </p>
                       <div style={{ 
@@ -123,7 +127,7 @@ const AdminDashboard: React.FC = () => {
                       }}>
                         <span style={{ 
                           fontSize: '0.875rem', 
-                          color: 'var(--primary-600)', 
+                          color: 'var(--text-primary)', 
                           fontWeight: '500' 
                         }}>
                           {card.count}

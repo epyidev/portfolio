@@ -33,7 +33,7 @@ const ProjectDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-primary)' }}>
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -41,13 +41,24 @@ const ProjectDetailPage: React.FC = () => {
 
   if (error || !project) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-primary)' }}>
         <div className="text-center">
-          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: 'var(--spacing-md)' }}>
+          <h1 style={{ 
+            fontSize: '2rem', 
+            fontWeight: 'bold', 
+            marginBottom: 'var(--spacing-md)',
+            color: 'var(--text-primary)',
+            fontFamily: 'var(--font-serif)'
+          }}>
             Projet non trouvé
           </h1>
-          <p className="text-gray" style={{ marginBottom: 'var(--spacing-md)' }}>{error}</p>
-          <Link to="/portfolio" className="btn btn-primary">
+          <p style={{ 
+            marginBottom: 'var(--spacing-md)',
+            color: 'var(--text-secondary)'
+          }}>
+            {error}
+          </p>
+          <Link to="/portfolio" className="btn btn-outline">
             Retour au portfolio
           </Link>
         </div>
@@ -56,32 +67,45 @@ const ProjectDetailPage: React.FC = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--gray-50)' }}>
-      <div className="container" style={{ maxWidth: '1024px', padding: 'var(--spacing-2xl) var(--spacing-md)' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+      <div className="container" style={{ paddingTop: 'var(--spacing-2xl)', paddingBottom: 'var(--spacing-2xl)' }}>
         <Link 
           to="/portfolio" 
           style={{ 
             display: 'inline-flex', 
             alignItems: 'center', 
             gap: 'var(--spacing-xs)', 
-            color: 'var(--primary-600)', 
+            color: 'var(--text-secondary)', 
             textDecoration: 'none',
             marginBottom: 'var(--spacing-2xl)',
-            transition: 'color 0.2s ease',
-            fontSize: '0.95rem'
+            transition: 'var(--transition-normal)',
+            fontSize: '0.95rem',
+            border: `var(--border-width) solid var(--border-primary)`,
+            padding: 'var(--spacing-sm) var(--spacing-md)',
+            borderRadius: 'var(--border-radius)'
           }}
-          onMouseOver={(e) => e.currentTarget.style.color = 'var(--primary-700)'}
-          onMouseOut={(e) => e.currentTarget.style.color = 'var(--primary-600)'}
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = 'var(--text-primary)';
+            e.currentTarget.style.borderColor = 'var(--border-secondary)';
+            e.currentTarget.style.backgroundColor = 'var(--bg-hover)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = 'var(--text-secondary)';
+            e.currentTarget.style.borderColor = 'var(--border-primary)';
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
         >
           <ArrowLeft size={20} />
           <span>Retour au portfolio</span>
         </Link>
 
         <article style={{ 
-          backgroundColor: 'white', 
+          backgroundColor: 'var(--bg-secondary)', 
+          border: `var(--border-width) solid var(--border-primary)`,
           borderRadius: 'var(--border-radius)',
           padding: 'var(--spacing-2xl)',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          maxWidth: '1024px',
+          margin: '0 auto'
         }}>
           {project.thumbnail && (
             <img
@@ -92,7 +116,8 @@ const ProjectDetailPage: React.FC = () => {
                 height: '300px',
                 objectFit: 'cover',
                 borderRadius: 'var(--border-radius)',
-                marginBottom: 'var(--spacing-2xl)'
+                marginBottom: 'var(--spacing-2xl)',
+                border: `var(--border-width) solid var(--border-primary)`
               }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -106,14 +131,16 @@ const ProjectDetailPage: React.FC = () => {
               fontSize: '2.5rem', 
               fontWeight: '700', 
               marginBottom: 'var(--spacing-md)',
-              lineHeight: '1.2'
+              lineHeight: '1.2',
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-serif)'
             }}>
               {project.title}
             </h1>
             
             <p style={{ 
               fontSize: '1.25rem', 
-              color: 'var(--gray-600)', 
+              color: 'var(--text-secondary)', 
               marginBottom: 'var(--spacing-lg)',
               lineHeight: '1.6'
             }}>
@@ -135,11 +162,12 @@ const ProjectDetailPage: React.FC = () => {
                       alignItems: 'center',
                       gap: 'var(--spacing-xs)',
                       padding: 'var(--spacing-sm) var(--spacing-md)', 
-                      backgroundColor: 'var(--primary-100)', 
-                      color: 'var(--primary-800)', 
+                      backgroundColor: 'var(--bg-tertiary)', 
+                      color: 'var(--text-secondary)', 
                       fontSize: '0.875rem',
                       fontWeight: '500',
-                      borderRadius: '9999px' 
+                      border: `var(--border-width) solid var(--border-primary)`,
+                      borderRadius: 'var(--border-radius)' 
                     }}
                   >
                     <Tag size={14} />
@@ -150,11 +178,14 @@ const ProjectDetailPage: React.FC = () => {
             )}
           </header>
           
-          <div style={{ 
-            fontSize: '1.1rem',
-            lineHeight: '1.7',
-            color: 'var(--gray-800)'
-          }}>
+          <div 
+            className="markdown-content"
+            style={{ 
+              fontSize: '1.1rem',
+              lineHeight: '1.7',
+              color: 'var(--text-primary)'
+            }}
+          >
             <ReactMarkdown>
               {project.longDescription || project.content || 'Aucune description détaillée disponible.'}
             </ReactMarkdown>

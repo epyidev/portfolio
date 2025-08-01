@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Button, LoadingSpinner } from '../components/UI';
@@ -10,6 +10,7 @@ import type { Config } from '../types';
 const HomePage: React.FC = () => {
   const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,18 +48,18 @@ const HomePage: React.FC = () => {
           </p>
           <div style={{ display: 'flex', gap: 'var(--spacing-md)', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Button 
-              variant="secondary" 
+              variant="outline" 
               size="lg" 
               icon={Download} 
               onClick={() => window.open('/api/cv/download', '_blank')}
             >
               Télécharger mon CV
             </Button>
-            <Link to="/portfolio">
-              <Button variant="outline" size="lg" icon={ArrowRight} iconPosition="right">
+            <Button variant="outline" size="lg" icon={ArrowRight} iconPosition="right" onClick={() => {
+                navigate('/portfolio');
+            }}>
                 Voir mes projets
-              </Button>
-            </Link>
+            </Button>
           </div>
         </div>
       </section>

@@ -15,7 +15,7 @@ const Textarea: React.FC<TextareaProps> = ({
   ...props
 }) => {
   const textareaId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
-  const textareaClass = error ? 'input-field input-error' : 'input-field';
+  const textareaClass = error ? 'form-textarea text-error' : 'form-textarea';
 
   return (
     <div className="form-group">
@@ -29,8 +29,8 @@ const Textarea: React.FC<TextareaProps> = ({
         className={`${textareaClass} ${className}`}
         {...props}
       />
-      {error && <div className="form-error">{error}</div>}
-      {helperText && !error && <div className="form-helper">{helperText}</div>}
+      {error && <div className="text-error text-sm" style={{marginTop: 'var(--spacing-xs)'}}>{error}</div>}
+      {helperText && !error && <div className="text-muted text-sm" style={{marginTop: 'var(--spacing-xs)'}}>{helperText}</div>}
     </div>
   );
 };

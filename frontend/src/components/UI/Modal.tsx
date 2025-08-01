@@ -27,7 +27,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -38,13 +38,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
     >
       <div
         style={{
-          backgroundColor: 'white',
-          borderRadius: 'var(--border-radius-lg)',
+          backgroundColor: 'var(--bg-secondary)',
+          border: 'var(--border-width) solid var(--border-primary)',
+          borderRadius: 'var(--border-radius)',
           ...sizeClasses[size],
           width: '100%',
           maxHeight: '90vh',
           overflow: 'auto',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          boxShadow: 'var(--shadow-lg)'
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -55,10 +56,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: 'var(--spacing-lg)',
-            borderBottom: '1px solid var(--gray-200)'
+            borderBottom: 'var(--border-width) solid var(--border-primary)'
           }}
         >
-          <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'bold' }}>
+          <h2 style={{ 
+            margin: 0, 
+            fontSize: 'var(--text-2xl)', 
+            fontWeight: '500',
+            fontFamily: 'var(--font-serif)',
+            color: 'var(--text-primary)'
+          }}>
             {title}
           </h2>
           <button
@@ -72,16 +79,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--gray-500)',
-              transition: 'all 0.2s'
+              color: 'var(--text-muted)',
+              transition: 'var(--transition-fast)'
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--gray-100)';
-              e.currentTarget.style.color = 'var(--gray-700)';
+              e.currentTarget.style.backgroundColor = 'var(--bg-hover)';
+              e.currentTarget.style.color = 'var(--text-primary)';
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = 'var(--gray-500)';
+              e.currentTarget.style.color = 'var(--text-muted)';
             }}
           >
             <X size={20} />

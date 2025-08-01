@@ -117,7 +117,7 @@ const AdminSettings: React.FC = () => {
               display: 'inline-flex', 
               alignItems: 'center', 
               gap: 'var(--spacing-xs)', 
-              color: 'var(--primary-100)', 
+              color: 'var(--text-secondary)', 
               textDecoration: 'none',
               marginBottom: 'var(--spacing-md)'
             }}>

@@ -52,7 +52,7 @@ const PortfolioPage: React.FC = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--gray-50)' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Hero Section */}
       <section className="hero">
         <div className="container">
@@ -66,9 +66,9 @@ const PortfolioPage: React.FC = () => {
 
       {/* Filtres et Recherche */}
       <section style={{ 
-        backgroundColor: 'white', 
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', 
-        borderBottom: '1px solid var(--gray-200)' 
+        backgroundColor: 'var(--bg-secondary)', 
+        border: 'none',
+        borderBottom: '1px solid var(--border-primary)' 
       }}>
         <div className="container" style={{ padding: 'var(--spacing-xl) 0' }}>
           <div style={{ 
@@ -90,7 +90,7 @@ const PortfolioPage: React.FC = () => {
                     left: '16px', 
                     top: '50%', 
                     transform: 'translateY(-50%)', 
-                    color: 'var(--gray-400)',
+                    color: 'var(--text-muted)',
                     zIndex: 1,
                     pointerEvents: 'none'
                   }} 
@@ -105,47 +105,24 @@ const PortfolioPage: React.FC = () => {
                     paddingLeft: '48px',
                     fontSize: '1rem',
                     height: '48px',
-                    borderRadius: '12px',
-                    border: '2px solid var(--gray-200)',
-                    transition: 'all 0.2s ease',
-                    outline: 'none',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+                    borderRadius: 'var(--border-radius)',
+                    border: `var(--border-width) solid var(--border-primary)`,
+                    backgroundColor: 'var(--bg-tertiary)',
+                    color: 'var(--text-primary)',
+                    transition: 'var(--transition-normal)',
+                    outline: 'none'
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--primary-500)';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                    e.target.style.borderColor = 'var(--border-secondary)';
+                    e.target.style.backgroundColor = 'var(--bg-hover)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = 'var(--gray-200)';
-                    e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.04)';
+                    e.target.style.borderColor = 'var(--border-primary)';
+                    e.target.style.backgroundColor = 'var(--bg-tertiary)';
                   }}
                 />
               </div>
             </div>
-            
-            {searchTerm && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSearchTerm('')}
-                style={{
-                  fontSize: '0.875rem',
-                  color: 'var(--gray-600)',
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  borderRadius: '8px'
-                }}
-              >
-                Effacer la recherche
-              </Button>
-            )}
-          </div>
-          
-          <div style={{ 
-            marginTop: 'var(--spacing-md)', 
-            fontSize: '0.875rem', 
-            color: 'var(--gray-600)' 
-          }}>
-            {filteredProjects.length} projet{filteredProjects.length > 1 ? 's' : ''} trouvé{filteredProjects.length > 1 ? 's' : ''}
           </div>
         </div>
       </section>
@@ -155,17 +132,18 @@ const PortfolioPage: React.FC = () => {
         <div className="container">
           {filteredProjects.length === 0 ? (
             <div className="text-center" style={{ padding: 'var(--spacing-4xl) 0' }}>
-              <div style={{ color: 'var(--gray-400)', marginBottom: 'var(--spacing-md)' }}>
+              <div style={{ color: 'var(--text-muted)', marginBottom: 'var(--spacing-md)' }}>
                 <Search size={48} style={{ margin: '0 auto' }} />
               </div>
               <h3 style={{ 
                 fontSize: '1.25rem', 
                 fontWeight: '500', 
-                marginBottom: 'var(--spacing-sm)' 
+                marginBottom: 'var(--spacing-sm)',
+                color: 'var(--text-primary)'
               }}>
                 Aucun projet trouvé
               </h3>
-              <p className="text-gray">
+              <p style={{ color: 'var(--text-secondary)' }}>
                 Essayez de modifier vos critères de recherche ou de supprimer les filtres.
               </p>
             </div>
@@ -179,7 +157,8 @@ const PortfolioPage: React.FC = () => {
                       <div style={{ 
                         width: '200px',
                         height: '140px',
-                        backgroundColor: 'var(--gray-200)', 
+                        backgroundColor: 'var(--bg-tertiary)', 
+                        border: `var(--border-width) solid var(--border-primary)`,
                         borderRadius: 'var(--border-radius)', 
                         flexShrink: 0,
                         overflow: 'hidden' 
@@ -200,7 +179,7 @@ const PortfolioPage: React.FC = () => {
                             const parent = target.parentElement;
                             if (parent) {
                               parent.innerHTML = `
-                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--gray-400);">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
                                   <svg style="width: 48px; height: 48px;" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
                                   </svg>
@@ -216,7 +195,7 @@ const PortfolioPage: React.FC = () => {
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'center', 
-                          color: 'var(--gray-400)' 
+                          color: 'var(--text-muted)' 
                         }}>
                           <svg style={{ width: '48px', height: '48px' }} fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
@@ -230,12 +209,14 @@ const PortfolioPage: React.FC = () => {
                         <h3 style={{ 
                           fontSize: '1.5rem', 
                           fontWeight: '600', 
-                          marginBottom: 'var(--spacing-sm)' 
+                          marginBottom: 'var(--spacing-sm)',
+                          color: 'var(--text-primary)',
+                          fontFamily: 'var(--font-serif)'
                         }}>
                           {project.title}
                         </h3>
                         <p style={{ 
-                          color: 'var(--gray-600)', 
+                          color: 'var(--text-secondary)', 
                           marginBottom: 'var(--spacing-md)',
                           fontSize: '1rem',
                           lineHeight: '1.6'
@@ -258,10 +239,11 @@ const PortfolioPage: React.FC = () => {
                                   alignItems: 'center',
                                   gap: 'var(--spacing-xs)',
                                   padding: 'var(--spacing-xs) var(--spacing-sm)', 
-                                  backgroundColor: 'var(--gray-100)', 
-                                  color: 'var(--gray-700)', 
-                                  fontSize: '0.75rem', 
-                                  borderRadius: '9999px' 
+                                  backgroundColor: 'var(--bg-tertiary)', 
+                                  color: 'var(--text-secondary)', 
+                                  fontSize: '0.75rem',
+                                  border: `var(--border-width) solid var(--border-primary)`,
+                                  borderRadius: 'var(--border-radius)' 
                                 }}
                               >
                                 <Tag size={10} />

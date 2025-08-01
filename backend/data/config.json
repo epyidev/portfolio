@@ -4,8 +4,8 @@
     "shortDescription": "Courte desc test",
     "contactEmail": "contact@example.com",
     "contactPhone": "+33 1 23 45 67 89",
-    "markdownContent": "# À propos de moi\n\nContenu par défaut de la page d'accueil en markdown.\n\n__Salut les petits potes__\n\n**mdr en gras**",
-    "updatedAt": "2025-07-31T13:49:47.897Z"
+    "markdownContent": "# À propos de moi\n\nContenu par défaut de la page d'accueil en markdown.\n\n__Salut les petits potes__\n\n**mdr en gras**\n\n# Gros titre\n\n## Plus petit titre\n\n### Tout petit titre",
+    "updatedAt": "2025-07-31T17:08:28.448Z"
   },
   "socialNetworks": [
     {
@@ -21,6 +21,13 @@
       "url": "https://google.com/",
       "icon": "discord",
       "order": 2
+    },
+    {
+      "id": "1753981316565",
+      "name": "Youtube",
+      "url": "https://youtube.com/",
+      "icon": "youtube",
+      "order": 3
     }
   ]
 }

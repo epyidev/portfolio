@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Github, Linkedin, Mail, ExternalLink, Youtube, Twitter, Instagram, Facebook } from 'lucide-react';
 import { configService } from '../../services';
 
 const Footer: React.FC = () => {
   const [config, setConfig] = useState<any>(null);
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
@@ -86,26 +88,32 @@ const Footer: React.FC = () => {
           {/* Liens rapides */}
           <div className="footer-section">
             <h3>Liens rapides</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-              <a href="/">Accueil</a>
-              <a href="/portfolio">Portfolio</a>
-              <a 
-                href="/admin/login" 
-                style={{ 
-                  fontSize: '0.875rem', 
-                  color: 'var(--gray-400)', 
-                  marginTop: 'var(--spacing-md)' 
-                }}
+            <div className="footer-links">
+              <button 
+                onClick={() => navigate('/')}
+                className="footer-nav-button"
+              >
+                Accueil
+              </button>
+              <button 
+                onClick={() => navigate('/portfolio')}
+                className="footer-nav-button"
+              >
+                Portfolio
+              </button>
+              <button 
+                onClick={() => navigate('/admin/login')}
+                className="footer-nav-button admin-link"
               >
                 Administration
-              </a>
+              </button>
             </div>
           </div>
         </div>
 
         {/* Ligne de séparation */}
         <div className="footer-bottom">
-          <div className="flex-between" style={{ flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+          <div className="footer-bottom-content">
             <p>© {currentYear} Pierre Lihoreau. Tous droits réservés.</p>
             <p>
               Powered by{' '}
@@ -113,7 +121,6 @@ const Footer: React.FC = () => {
                 href="https://lets-pop.fr/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                style={{ color: 'var(--primary-500)' }}
               >
                 Let's PoP !
               </a>

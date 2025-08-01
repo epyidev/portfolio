@@ -141,7 +141,7 @@ const AdminCV: React.FC = () => {
               display: 'inline-flex', 
               alignItems: 'center', 
               gap: 'var(--spacing-xs)', 
-              color: 'var(--primary-100)', 
+              color: 'var(--text-secondary)', 
               textDecoration: 'none',
               marginBottom: 'var(--spacing-md)'
             }}>
@@ -161,16 +161,7 @@ const AdminCV: React.FC = () => {
             
             {/* Message de succès */}
             {uploadMessage && (
-              <div style={{
-                padding: 'var(--spacing-md)',
-                backgroundColor: 'var(--green-100)',
-                color: 'var(--green-800)',
-                borderRadius: 'var(--border-radius)',
-                marginBottom: 'var(--spacing-lg)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-xs)'
-              }}>
+              <div className="message message-success">
                 <Check size={16} />
                 {uploadMessage}
               </div>
@@ -181,7 +172,7 @@ const AdminCV: React.FC = () => {
               <Card>
                 <div style={{ marginBottom: 'var(--spacing-lg)' }}>
                   <h2>CV actuel</h2>
-                  <p className="text-gray">Statut de votre CV téléchargeable</p>
+                  <p className="text-secondary">Statut de votre CV téléchargeable</p>
                 </div>
 
                 {hasCV ? (
@@ -190,27 +181,27 @@ const AdminCV: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: 'var(--spacing-md)',
-                    backgroundColor: 'var(--green-50)',
+                    backgroundColor: 'var(--success-bg)',
                     borderRadius: 'var(--border-radius)',
-                    border: '1px solid var(--green-200)'
+                    border: '1px solid var(--success)'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
                       <div style={{
                         width: '40px',
                         height: '40px',
-                        backgroundColor: 'var(--green-100)',
+                        backgroundColor: 'var(--bg-tertiary)',
                         borderRadius: 'var(--border-radius)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
                       }}>
-                        <FileText size={20} style={{ color: 'var(--green-600)' }} />
+                        <FileText size={20} style={{ color: 'var(--success)' }} />
                       </div>
                       <div>
-                        <div style={{ fontWeight: '500' }}>
+                        <div style={{ fontWeight: '500', color: 'var(--text-primary)' }}>
                           {fileName || 'CV.pdf'}
                         </div>
-                        <div style={{ fontSize: '0.875rem', color: 'var(--green-600)' }}>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--success)' }}>
                           CV disponible au téléchargement
                         </div>
                       </div>
@@ -229,7 +220,7 @@ const AdminCV: React.FC = () => {
                         size="sm"
                         icon={Trash2}
                         onClick={handleDelete}
-                        style={{ color: 'var(--red-600)' }}
+                        style={{ color: 'var(--error)' }}
                       />
                     </div>
                   </div>
@@ -237,13 +228,13 @@ const AdminCV: React.FC = () => {
                   <div style={{
                     padding: 'var(--spacing-xl)',
                     textAlign: 'center',
-                    backgroundColor: 'var(--gray-50)',
+                    backgroundColor: 'var(--bg-tertiary)',
                     borderRadius: 'var(--border-radius)',
-                    border: '2px dashed var(--gray-300)'
+                    border: '2px dashed var(--border-secondary)'
                   }}>
-                    <FileText size={48} style={{ color: 'var(--gray-400)', marginBottom: 'var(--spacing-md)' }} />
-                    <h3 style={{ margin: 0, marginBottom: 'var(--spacing-xs)' }}>Aucun CV uploadé</h3>
-                    <p className="text-gray" style={{ margin: 0 }}>
+                    <FileText size={48} style={{ color: 'var(--text-muted)', marginBottom: 'var(--spacing-md)' }} />
+                    <h3 style={{ margin: 0, marginBottom: 'var(--spacing-xs)', color: 'var(--text-primary)' }}>Aucun CV uploadé</h3>
+                    <p className="text-secondary" style={{ margin: 0 }}>
                       Uploadez votre CV pour le rendre téléchargeable par les visiteurs
                     </p>
                   </div>
@@ -255,7 +246,7 @@ const AdminCV: React.FC = () => {
             <Card>
               <div style={{ marginBottom: 'var(--spacing-lg)' }}>
                 <h2>{hasCV ? 'Remplacer le CV' : 'Uploader un CV'}</h2>
-                <p className="text-gray">
+                <p className="text-secondary">
                   {hasCV 
                     ? 'Sélectionnez un nouveau fichier PDF pour remplacer le CV actuel'
                     : 'Sélectionnez un fichier PDF (max 5MB)'
@@ -276,7 +267,7 @@ const AdminCV: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 'var(--spacing-xs)',
-                    color: 'var(--primary-600)',
+                    color: 'var(--text-primary)',
                     marginTop: 'var(--spacing-md)'
                   }}>
                     <LoadingSpinner size="sm" />
@@ -286,7 +277,7 @@ const AdminCV: React.FC = () => {
 
                 <div style={{ 
                   fontSize: '0.875rem', 
-                  color: 'var(--gray-600)',
+                  color: 'var(--text-muted)',
                   marginTop: 'var(--spacing-md)'
                 }}>
                   <ul style={{ margin: 0, paddingLeft: 'var(--spacing-lg)' }}>
