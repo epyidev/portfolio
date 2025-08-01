@@ -71,7 +71,7 @@ const ProjectDetailPage: React.FC = () => {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <div className="container" style={{ paddingTop: 'var(--spacing-2xl)', paddingBottom: 'var(--spacing-2xl)' }}>
+      <div className="container" style={{ paddingTop: 'calc(80px + var(--spacing-2xl))', paddingBottom: 'var(--spacing-2xl)' }}>
         <Link 
           to="/portfolio" 
           style={{ 
