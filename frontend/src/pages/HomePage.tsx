@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Button, LoadingSpinner } from '../components/UI';
