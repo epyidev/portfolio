@@ -7,6 +7,7 @@ import { Button, LoadingSpinner } from '../components/UI';
 import projectService from '../services/projectService';
 import configService from '../services/configService';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useSEO } from '../hooks/useSEO';
 import { getImageUrl } from '../services/api';
 import type { Config } from '../types';
 
@@ -16,6 +17,32 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   useDocumentTitle('Accueil');
+
+  // SEO pour la page d'accueil
+  useSEO({
+    title: 'Pierre Lihoreau - Expert Audiovisuel & Développeur Full-Stack',
+    description: 'Portfolio de Pierre Lihoreau - Expert Audiovisuel & Développeur Full-Stack. Découvrez mes réalisations en production audiovisuelle, UI/UX et développement web.',
+    keywords: 'Pierre Lihoreau, Portfolio, Audiovisuel, Production Vidéo, Expert Audiovisuel, Développeur Full-Stack, UI/UX Designer, React, TypeScript, Node.js',
+    ogTitle: 'Pierre Lihoreau - Expert Audiovisuel & Développeur Full-Stack',
+    ogDescription: 'Expert Audiovisuel passionné par la production vidéo et le développement web. Découvrez mes projets et réalisations.',
+    ogType: 'website',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Pierre Lihoreau",
+      "jobTitle": "Expert Audiovisuel & Développeur Full-Stack",
+      "description": "Expert Audiovisuel et Développeur Full-Stack spécialisé en production vidéo, UI/UX et développement web",
+      "url": "https://pierrelihoreau.lets-pop.fr",
+      "sameAs": [
+        // Ajoutez ici vos profils sociaux
+      ],
+      "knowsAbout": ["Audiovisuel", "Production Vidéo", "React", "TypeScript", "Node.js", "UI/UX Design"],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Freelance"
+      }
+    }
+  });
 
   useEffect(() => {
     const fetchData = async () => {

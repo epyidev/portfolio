@@ -220,6 +220,66 @@ app.get('/api/test', (req, res) => {
   });
 });
 
+// Route robots.txt pour SEO
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`User-agent: *
+Allow: /
+
+Sitemap: https://pierrelihoreau.lets-pop.fr/sitemap.xml
+
+Allow: /
+Allow: /portfolio
+Allow: /portfolio/*
+
+Disallow: /admin
+Disallow: /api
+
+Disallow: /*.json$
+Disallow: /uploads/`);
+});
+
+// Route sitemap.xml pour SEO
+app.get('/sitemap.xml', (req, res) => {
+  try {
+    const projects = dataService.getProjects()
+      .filter(project => project.visibility === 'public');
+    
+    const baseUrl = 'https://pierrelihoreau.lets-pop.fr';
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    const staticPages = [
+      { url: `${baseUrl}/`, lastmod: currentDate, changefreq: 'weekly', priority: '1.0' },
+      { url: `${baseUrl}/portfolio`, lastmod: currentDate, changefreq: 'weekly', priority: '0.9' }
+    ];
+
+    const projectPages = projects.map(project => ({
+      url: `${baseUrl}/portfolio/${project.id}`,
+      lastmod: project.updatedAt ? project.updatedAt.split('T')[0] : currentDate,
+      changefreq: 'monthly',
+      priority: '0.7'
+    }));
+
+    const allPages = [...staticPages, ...projectPages];
+
+    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allPages.map(page => `  <url>
+    <loc>${page.url}</loc>
+    <lastmod>${page.lastmod}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+    res.type('application/xml');
+    res.send(sitemapXml);
+  } catch (error) {
+    console.error('Erreur génération sitemap:', error);
+    res.status(500).send('Erreur lors de la génération du sitemap');
+  }
+});
+
 // Configuration et contenu de la page d'accueil
 app.get('/api/config', (req, res) => {
   try {

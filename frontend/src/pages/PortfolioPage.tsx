@@ -6,6 +6,7 @@ import projectService from '../services/projectService';
 import configService from '../services/configService';
 import { getImageUrl } from '../services/api';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useSEO } from '../hooks/useSEO';
 import type { Project, Config } from '../types';
 
 const PortfolioPage: React.FC = () => {
@@ -18,6 +19,26 @@ const PortfolioPage: React.FC = () => {
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useDocumentTitle('Portfolio');
+
+  // SEO pour la page portfolio
+  useSEO({
+    title: 'Portfolio - Pierre Lihoreau | Projets Audiovisuel & Développement',
+    description: 'Découvrez les projets de Pierre Lihoreau : productions audiovisuelles, développement web, applications React/TypeScript et designs UI/UX.',
+    keywords: `Pierre Lihoreau, Portfolio, Projets, Audiovisuel, Production Vidéo, ${availableTags.join(', ')}, Développement Web, React, TypeScript, UI/UX Design`,
+    ogTitle: 'Portfolio - Pierre Lihoreau | Projets Audiovisuel & Développement',
+    ogDescription: 'Découvrez mes projets de production audiovisuelle, développement web et UI/UX design.',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": "Portfolio Pierre Lihoreau",
+      "description": "Collection des projets et réalisations audiovisuelles et de développement de Pierre Lihoreau",
+      "author": {
+        "@type": "Person",
+        "name": "Pierre Lihoreau"
+      },
+      "keywords": availableTags.join(', ')
+    }
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -360,7 +381,7 @@ const PortfolioPage: React.FC = () => {
                       {project.thumbnail ? (
                         <img
                           src={getImageUrl(project.thumbnail)}
-                          alt={project.title}
+                          alt={`Aperçu du projet ${project.title} - ${project.shortDescription}`}
                           style={{ 
                             width: '100%', 
                             height: '100%', 

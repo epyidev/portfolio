@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://pierrelihoreau.lets-pop.fr/sitemap.xml
+
+# Pages importantes
+Allow: /
+Allow: /portfolio
+Allow: /portfolio/*
+
+# Bloquer l'admin des moteurs de recherche
+Disallow: /admin
+Disallow: /api
+
+# Fichiers à ignorer
+Disallow: /*.json$
+Disallow: /uploads/

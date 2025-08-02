@@ -8,6 +8,7 @@ import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
 import { LoadingSpinner } from '../components/UI';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useSEO } from '../hooks/useSEO';
 import { useScrollToTopOnMount } from '../hooks/useScrollToTop';
 
 const ProjectDetailPage: React.FC = () => {
@@ -18,6 +19,31 @@ const ProjectDetailPage: React.FC = () => {
 
   useDocumentTitle(project?.title || 'Projet');
   useScrollToTopOnMount();
+
+  // SEO pour la page de détail du projet
+  useSEO({
+    title: project ? `${project.title} - Portfolio Pierre Lihoreau` : 'Projet - Portfolio Pierre Lihoreau',
+    description: project ? `${project.shortDescription} - Découvrez ce projet réalisé par Pierre Lihoreau.` : 'Découvrez les détails de ce projet.',
+    keywords: project ? `Pierre Lihoreau, ${project.title}, ${project.tags?.join(', ') || ''}` : 'Pierre Lihoreau, Projet',
+    ogTitle: project ? `${project.title} - Pierre Lihoreau` : 'Projet - Pierre Lihoreau',
+    ogDescription: project?.shortDescription,
+    ogImage: project?.thumbnail ? getImageUrl(project.thumbnail) : undefined,
+    ogType: 'article',
+    structuredData: project ? {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": project.title,
+      "description": project.shortDescription,
+      "author": {
+        "@type": "Person",
+        "name": "Pierre Lihoreau"
+      },
+      "dateCreated": project.createdAt,
+      "dateModified": project.updatedAt,
+      "keywords": project.tags?.join(', '),
+      "image": project.thumbnail ? getImageUrl(project.thumbnail) : undefined
+    } : undefined
+  });
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -114,7 +140,7 @@ const ProjectDetailPage: React.FC = () => {
           {project.thumbnail && (
             <img
               src={getImageUrl(project.thumbnail)}
-              alt={project.title}
+              alt={`Image principale du projet ${project.title} - ${project.shortDescription}`}
               style={{
                 width: '100%',
                 height: '300px',
