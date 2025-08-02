@@ -14,6 +14,8 @@ const PortfolioPage: React.FC = () => {
   const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useDocumentTitle('Portfolio');
 
@@ -27,6 +29,20 @@ const PortfolioPage: React.FC = () => {
         setProjects(projectsData);
         setFilteredProjects(projectsData);
         setConfig(siteConfig);
+        
+        // Extraire tous les tags uniques des projets
+        const allTags = projectsData.reduce((tags: string[], project) => {
+          if (project.tags) {
+            project.tags.forEach(tag => {
+              if (!tags.includes(tag)) {
+                tags.push(tag);
+              }
+            });
+          }
+          return tags;
+        }, []);
+        setAvailableTags(allTags.sort());
+        
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
       } finally {
@@ -41,6 +57,7 @@ const PortfolioPage: React.FC = () => {
   useEffect(() => {
     let filtered = projects;
 
+    // Filtrage par terme de recherche
     if (searchTerm) {
       filtered = filtered.filter(project =>
         project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -49,8 +66,32 @@ const PortfolioPage: React.FC = () => {
       );
     }
 
+    // Filtrage par tags sélectionnés
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(project =>
+        project.tags?.some(tag => selectedTags.includes(tag))
+      );
+    }
+
     setFilteredProjects(filtered);
-  }, [projects, searchTerm]);
+  }, [projects, searchTerm, selectedTags]);
+
+  // Gestion de la sélection/désélection des tags
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev => {
+      if (prev.includes(tag)) {
+        return prev.filter(t => t !== tag);
+      } else {
+        return [...prev, tag];
+      }
+    });
+  };
+
+  // Effacer tous les filtres
+  const clearAllFilters = () => {
+    setSearchTerm('');
+    setSelectedTags([]);
+  };
 
   if (loading) {
     return (
@@ -84,14 +125,18 @@ const PortfolioPage: React.FC = () => {
       <section style={{ 
         backgroundColor: 'var(--bg-secondary)', 
         border: 'none',
-        borderBottom: '1px solid var(--border-primary)' 
+        borderBottom: '1px solid var(--border-primary)',
+        paddingTop: '40px',
+        paddingBottom: '40px'
       }}>
-        <div className="container" style={{ marginTop: '40px', marginBottom: '40px' }}>
+        <div className="container">
+          {/* Barre de recherche */}
           <div style={{ 
             display: 'flex', 
             flexDirection: 'row', 
             gap: 'var(--spacing-md)', 
-            alignItems: 'center' 
+            alignItems: 'center',
+            marginBottom: 'var(--spacing-lg)'
           }}>
             <div style={{ 
               flex: 1, 
@@ -140,6 +185,100 @@ const PortfolioPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Section des tags */}
+          {availableTags.length > 0 && (
+            <div>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                marginBottom: 'var(--spacing-md)' 
+              }}>
+                <h4 style={{ 
+                  fontSize: '0.875rem', 
+                  fontWeight: '500', 
+                  color: 'var(--text-secondary)',
+                  margin: 0,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}>
+                  Filtrer par catégorie
+                </h4>
+                {(selectedTags.length > 0 || searchTerm) && (
+                  <button
+                    onClick={clearAllFilters}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--text-muted)',
+                      fontSize: '0.75rem',
+                      cursor: 'pointer',
+                      textDecoration: 'underline',
+                      padding: 0
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'var(--text-secondary)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--text-muted)';
+                    }}
+                  >
+                    Effacer les filtres
+                  </button>
+                )}
+              </div>
+              
+              <div style={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: 'var(--spacing-sm)' 
+              }}>
+                {availableTags.map((tag) => {
+                  const isSelected = selectedTags.includes(tag);
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => toggleTag(tag)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 'var(--spacing-xs)',
+                        padding: 'var(--spacing-sm) var(--spacing-md)',
+                        backgroundColor: 'var(--bg-tertiary)',
+                        color: isSelected ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                        fontSize: '0.875rem',
+                        fontWeight: '400',
+                        border: `var(--border-width) solid ${isSelected ? 'var(--accent-primary)' : 'var(--border-primary)'}`,
+                        borderRadius: 'var(--border-radius)',
+                        cursor: 'pointer',
+                        transition: 'all var(--transition-normal)',
+                        outline: 'none',
+                        boxShadow: 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.borderColor = 'var(--border-secondary)';
+                        } else {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.borderColor = 'var(--border-primary)';
+                        } else {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }
+                      }}
+                    >
+                      <Tag size={12} />
+                      {tag}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -159,9 +298,38 @@ const PortfolioPage: React.FC = () => {
               }}>
                 Aucun projet trouvé
               </h3>
-              <p style={{ color: 'var(--text-secondary)' }}>
-                Essayez de modifier vos critères de recherche ou de supprimer les filtres.
+              <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-md)' }}>
+                {searchTerm || selectedTags.length > 0 
+                  ? 'Essayez de modifier vos critères de recherche ou de supprimer les filtres.'
+                  : 'Aucun projet disponible pour le moment.'
+                }
               </p>
+              {(searchTerm || selectedTags.length > 0) && (
+                <button
+                  onClick={clearAllFilters}
+                  style={{
+                    padding: 'var(--spacing-sm) var(--spacing-lg)',
+                    backgroundColor: 'var(--accent-primary)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 'var(--border-radius)',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-normal)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  Effacer tous les filtres
+                </button>
+              )}
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xl)' }}>
