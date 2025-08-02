@@ -5,11 +5,13 @@ import AdminProjects from './pages/AdminProjects';
 import AdminSettings from './pages/AdminSettings';
 import AdminCV from './pages/AdminCV';
 import { AuthProvider } from './contexts/AuthContext';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           {/* Pages publiques avec layout */}
           <Route path="/" element={

@@ -116,6 +116,7 @@ const PortfolioPage: React.FC = () => {
                   placeholder="Rechercher un projet..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
                   style={{
                     paddingLeft: '48px',
                     fontSize: '1rem',
@@ -167,17 +168,27 @@ const PortfolioPage: React.FC = () => {
               {filteredProjects.map((project) => (
                 <Link key={project.id} to={`/portfolio/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <Card hover>
-                    <div style={{ display: 'flex', gap: 'var(--spacing-lg)', alignItems: 'flex-start' }}>
+                    <div 
+                      className="project-card-content"
+                      style={{ 
+                        display: 'flex', 
+                        gap: 'var(--spacing-lg)', 
+                        alignItems: 'flex-start'
+                      }}
+                    >
                       {/* Image du projet */}
-                      <div style={{ 
-                        width: '200px',
-                        height: '140px',
-                        backgroundColor: 'var(--bg-tertiary)', 
-                        border: `var(--border-width) solid var(--border-primary)`,
-                        borderRadius: 'var(--border-radius)', 
-                        flexShrink: 0,
-                        overflow: 'hidden' 
-                      }}>
+                      <div 
+                        className="project-thumbnail"
+                        style={{ 
+                          width: '200px',
+                          height: '140px',
+                          backgroundColor: 'var(--bg-tertiary)', 
+                          border: `var(--border-width) solid var(--border-primary)`,
+                          borderRadius: 'var(--border-radius)', 
+                          flexShrink: 0,
+                          overflow: 'hidden' 
+                        }}
+                      >
                       {project.thumbnail ? (
                         <img
                           src={getImageUrl(project.thumbnail)}
@@ -220,28 +231,34 @@ const PortfolioPage: React.FC = () => {
                       </div>
 
                       {/* Contenu du projet */}
-                      <div style={{ flex: 1 }}>
-                        <h3 style={{ 
-                          fontSize: '1.5rem', 
-                          fontWeight: '600', 
-                          marginBottom: 'var(--spacing-sm)',
-                          color: 'var(--text-primary)',
-                          fontFamily: 'var(--font-serif)'
-                        }}>
+                      <div className="project-content" style={{ flex: 1 }}>
+                        <h3 
+                          className="project-title"
+                          style={{ 
+                            fontSize: '1.5rem', 
+                            fontWeight: '600', 
+                            marginBottom: 'var(--spacing-sm)',
+                            color: 'var(--text-primary)',
+                            fontFamily: 'var(--font-serif)'
+                          }}
+                        >
                           {project.title}
                         </h3>
-                        <p style={{ 
-                          color: 'var(--text-secondary)', 
-                          marginBottom: 'var(--spacing-md)',
-                          fontSize: '1rem',
-                          lineHeight: '1.6'
-                        }}>
+                        <p 
+                          className="project-description"
+                          style={{ 
+                            color: 'var(--text-secondary)', 
+                            marginBottom: 'var(--spacing-md)',
+                            fontSize: '1rem',
+                            lineHeight: '1.6'
+                          }}
+                        >
                           {project.shortDescription}
                         </p>
                         
                         {/* Tags */}
                         {project.tags && project.tags.length > 0 && (
-                          <div style={{ 
+                          <div className="project-tags" style={{ 
                             display: 'flex', 
                             flexWrap: 'wrap', 
                             gap: 'var(--spacing-sm)' 
@@ -249,6 +266,7 @@ const PortfolioPage: React.FC = () => {
                             {project.tags.map((tag) => (
                               <span
                                 key={tag}
+                                className="project-tag"
                                 style={{ 
                                   display: 'inline-flex',
                                   alignItems: 'center',

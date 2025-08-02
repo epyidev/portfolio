@@ -8,6 +8,7 @@ import projectService from '../services/projectService';
 import { getImageUrl } from '../services/api';
 import { LoadingSpinner } from '../components/UI';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useScrollToTopOnMount } from '../hooks/useScrollToTop';
 
 const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +17,7 @@ const ProjectDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useDocumentTitle(project?.title || 'Projet');
+  useScrollToTopOnMount();
 
   useEffect(() => {
     const fetchProject = async () => {

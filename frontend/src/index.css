@@ -1429,3 +1429,99 @@ a:hover {
   border-bottom: 1px solid var(--border-secondary);
   padding-bottom: var(--spacing-sm);
 }
+
+/* Styles responsifs pour la page Portfolio */
+@media (max-width: 768px) {
+  /* Structure des cartes de projet en colonne sur mobile */
+  .project-card-content {
+    flex-direction: column !important;
+    gap: var(--spacing-md) !important;
+  }
+
+  /* Image du projet sur mobile */
+  .project-thumbnail {
+    width: 100% !important;
+    height: 200px !important;
+    align-self: center;
+  }
+
+  /* Titre du projet plus petit sur mobile */
+  .project-title {
+    font-size: 1.25rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Description plus petite sur mobile */
+  .project-description {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Tags plus petits sur mobile */
+  .project-tag {
+    font-size: 0.7rem !important;
+    padding: 2px 6px !important;
+  }
+
+  /* Hero section plus compact sur mobile */
+  .hero h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  .hero p {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Boutons du hero plus petits sur mobile */
+  .hero .btn {
+    font-size: 0.9rem !important;
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+  }
+
+  /* Section de recherche plus compacte */
+  .container {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
+  /* Input de recherche adapté */
+  .search-input {
+    height: 44px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Encore plus compact sur très petits écrans */
+  .project-title {
+    font-size: 1.1rem !important;
+  }
+
+  .project-description {
+    font-size: 0.85rem !important;
+  }
+
+  .project-thumbnail {
+    height: 160px !important;
+  }
+
+  /* Hero encore plus compact */
+  .hero h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .hero p {
+    font-size: 0.9rem !important;
+  }
+
+  /* Espacement réduit */
+  .section {
+    padding: var(--spacing-xl) 0;
+  }
+
+  /* Tags empilés mieux sur très petits écrans */
+  .project-tags {
+    gap: var(--spacing-xs) !important;
+  }
+}
